@@ -5,6 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200522175758_PortfolioAndTradesToDB.cs" />
+    <Compile Remove="Migrations\20200522175758_PortfolioAndTradesToDB.Designer.cs" />
+    <Compile Remove="Migrations\20200522181506_PortfolioAndTradesToDB2.cs" />
+    <Compile Remove="Migrations\20200522181506_PortfolioAndTradesToDB2.Designer.cs" />
+    <Compile Remove="Migrations\20200522182515_removetables.cs" />
+    <Compile Remove="Migrations\20200522182515_removetables.Designer.cs" />
+    <Compile Remove="Migrations\20200522183253_InitialLoadAfterRestart.cs" />
+    <Compile Remove="Migrations\20200522183253_InitialLoadAfterRestart.Designer.cs" />
+    <Compile Remove="Migrations\20200522183559_InitialLoadAfterRestart.cs" />
+    <Compile Remove="Migrations\20200522183559_InitialLoadAfterRestart.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.4" />
