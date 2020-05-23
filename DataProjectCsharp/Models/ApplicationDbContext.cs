@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace DataProjectCsharp.Models
 {
     public class ApplicationDbContext: IdentityDbContext<User>

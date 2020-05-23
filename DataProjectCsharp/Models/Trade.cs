@@ -27,9 +27,12 @@ namespace DataProjectCsharp.Models
         [DataType(DataType.MultilineText)]
         public string Comments { get; set; }
         public DateTime CreatedTimeStamp { get; set; }
-
+        
+        [ForeignKey("User")]
+        public string UserId { get; set; }
         public User User { get; set; }
 
+        [ForeignKey("Portfolio")]
         public int PortfolioId { get; set; }
         public Portfolio Portfolio { get; set;}
 
