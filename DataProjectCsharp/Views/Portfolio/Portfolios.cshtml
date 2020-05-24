@@ -1,0 +1,24 @@
+﻿@model IEnumerable<DataProjectCsharp.Models.Portfolio>
+@{
+    ViewData["Title"] = "Portfolios";
+}
+
+<h1>Portfolios</h1>
+
+<!--Modal placeholder(makes the modal a part of the page's structure)-->
+<div id="modal-placeholder"></div>
+<div class="col-3 offset-3">
+    <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#addPortfolio" data-url="@Url.Action("AddPortfolio")">Add a new Portfolio</button>
+</div>
+@foreach (Portfolio portfolio in Model)
+{
+    <p>@portfolio.Name</p>
+    <p>num of trades: @(portfolio.Trades == null ? 0 : portfolio.Trades.Count)</p>
+    <a asp-action="PortfolioBreakdown" asp-route-id="@portfolio.PortfolioId">Breakdown for @portfolio.Name</a>
+    <!--View trades. This allow the user to perform crud operations on trades via a modal. it will be a modal within a modal.
+        one modal for the table.. and another for the crud ops create, update or delete for TRADES!!!
+        i will also need to pass in the portfolio id through the URL action.
+        https://stackoverflow.com/questions/13017513/how-to-pass-parameter-from-url-action-to-controller-function
+        -->
+    <p>View Trades</p>
+}
