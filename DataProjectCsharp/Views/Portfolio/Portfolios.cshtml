@@ -8,7 +8,7 @@
 <!--Modal placeholder(makes the modal a part of the page's structure)-->
 <div id="modal-placeholder"></div>
 <div class="col-3 offset-3">
-    <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#addPortfolio" data-url="@Url.Action("AddPortfolio")">Add a new Portfolio</button>
+    <button type="button" class="btn btn-primary" data-toggle="ajax-modal-portfolio" data-target="#addPortfolio" data-url="@Url.Action("AddPortfolio")">Add a new Portfolio</button>
 </div>
 @foreach (Portfolio portfolio in Model)
 {
@@ -21,4 +21,9 @@
         https://stackoverflow.com/questions/13017513/how-to-pass-parameter-from-url-action-to-controller-function
         -->
     <p>View Trades</p>
+    <div class="col-3">
+        <button type="button" class="btn btn-primary" data-toggle="ajax-modal-view-trades" data-target="#viewTrades" data-url="@Url.Action("ViewTrades", "Trade",new { id=portfolio.PortfolioId})">View Trades for @portfolio.Name</button>
+    </div>
+    
 }
+

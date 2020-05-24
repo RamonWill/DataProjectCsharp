@@ -88,5 +88,6 @@ namespace DataProjectCsharp.Controllers
                 return PartialView("_PortfolioModalPartial", portfolio);
             }
         }
+
     }
 }
