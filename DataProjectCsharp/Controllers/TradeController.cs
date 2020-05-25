@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -37,14 +38,31 @@ namespace DataProjectCsharp.Controllers
                 return NotFound();
             }
             // if this portfolio doesnt belong to the user return not found
-            Portfolio portfolio = _db.Portfolios.FirstOrDefault(p => p.PortfolioId == id && p.UserId == _userId);
+            
+            // This is eager loading  trades will be in the trade section
+            Portfolio portfolio = _db.Portfolios
+                                     .Where(p => p.PortfolioId == id && p.UserId == _userId)
+                                     .Include(p => p.Trades)
+                                     .FirstOrDefault();
+            
             if (portfolio == null)
             {
                 return NotFound();
+            }            
+
+            return PartialView("_TradeViewModalPartial", portfolio);
+        }
+
+        [HttpGet]
+        public IActionResult AddTrade(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
             }
-            List<Trade> allUserTrades = _db.Trades.Where(p => p.PortfolioId == id && p.UserId == _userId).ToList();
-            // In the future i might need to use a portfolio instead and iterate over the icollection to form a table.
-            return PartialView("_TradeViewModalPartial", allUserTrades);
+            Trade trade = new Trade { };
+            trade.PortfolioId = id.GetValueOrDefault();
+            return PartialView("_TradeEntryModalPartial", trade);
         }
     }
 }

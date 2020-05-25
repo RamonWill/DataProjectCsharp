@@ -73,7 +73,7 @@ namespace DataProjectCsharp.Controllers
             {
                 return PartialView("_PortfolioModalPartial", portfolio);
             }
-
+            
             portfolio.UserId = _userId;
             var isDuplicatePortfolio = _db.Portfolios.Any(p => p.Name == portfolio.Name && p.UserId == _userId);
             if (!isDuplicatePortfolio)
