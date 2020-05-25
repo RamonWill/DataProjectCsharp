@@ -15,7 +15,6 @@ namespace DataProjectCsharp.Models.Configurations
                 new Trade
                 {
                     TradeId = 9999,
-                    PortfolioName = "Portfolio Tester",
                     Ticker = "ITV.L",
                     Quantity = 500,
                     Price = 1.23m,

@@ -14,7 +14,7 @@ namespace DataProjectCsharp.Models
         [Required(ErrorMessage = "You must give your portfolio a name."), StringLength(50)]
         public string Name { get; set; }
 
-        public virtual ICollection<Trade> Trades { get; set; }
+        public ICollection<Trade> Trades { get; set; }
         [ForeignKey("User")]
         public string UserId { get; set; }
         public User User { get; set; }

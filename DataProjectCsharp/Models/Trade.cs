@@ -12,8 +12,6 @@ namespace DataProjectCsharp.Models
         [Key]
         public int TradeId { get; set; }
         [Required]
-        public string PortfolioName { get; set; }
-        [Required]
         public string Ticker { get; set; }
         [Required]
         public long Quantity { get; set; }
