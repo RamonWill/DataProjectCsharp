@@ -1,0 +1,38 @@
+﻿@model DataProjectCsharp.Models.Trade
+
+
+<div class="modal fade" id="addTrade" style="z-index:1055;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class=" = modal-header">
+                <h5 class="modal-title" id="addTradeLabel">Add a new Trade</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>This is where my Form will go.</p>
+                <!--<div class="text-danger" asp-validation-summary="All"></div>-->
+                <form method="post" asp-action="AddTrade">
+                    <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Ticker">Ticker</label>
+                        </div>
+                        <div class="col-6">
+                            <input asp-for="Ticker" class="form-control" />
+                            <span asp-validation-for="Ticker" class="text-danger"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-save="modal">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

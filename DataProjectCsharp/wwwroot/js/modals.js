@@ -27,7 +27,7 @@
 
 
 (function ($) {
-    var placeHolderElement = $('#modal-placeholder');
+    var placeHolderElement = $('#modal-placeholder2');
     $('button[data-toggle="ajax-modal-view-trades"]').click(function (event) {
         var url = $(this).data('url');
         $.get(url).done(function (data) {
@@ -39,3 +39,5 @@
         placeHolderElement.find('.modal').modal('hide');
     });
 })($);
+
+

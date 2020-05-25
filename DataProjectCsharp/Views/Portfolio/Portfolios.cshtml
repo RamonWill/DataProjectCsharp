@@ -7,6 +7,7 @@
 
 <!--Modal placeholder(makes the modal a part of the page's structure)-->
 <div id="modal-placeholder"></div>
+<div id="modal-placeholder2"></div>
 <div class="col-3 offset-3">
     <button type="button" class="btn btn-primary" data-toggle="ajax-modal-portfolio" data-target="#addPortfolio" data-url="@Url.Action("AddPortfolio")">Add a new Portfolio</button>
 </div>
@@ -24,6 +25,9 @@
     <div class="col-3">
         <button type="button" class="btn btn-primary" data-toggle="ajax-modal-view-trades" data-target="#viewTrades" data-url="@Url.Action("ViewTrades", "Trade",new { id=portfolio.PortfolioId})">View Trades for @portfolio.Name</button>
     </div>
-    
+    <div class="col-3 offset-3">
+        <button type="button" class="btn btn-primary" data-toggle="ajax-modal-portfolio" data-target="#addTrade" data-url="@Url.Action("AddTrade", "Trade", new { id=portfolio.PortfolioId})">Add a new Trade</button>
+    </div>
 }
+
 
