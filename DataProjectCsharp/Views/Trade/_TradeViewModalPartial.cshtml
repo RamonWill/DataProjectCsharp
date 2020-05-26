@@ -13,7 +13,7 @@
             </div>
             <div class="modal-body">
                 <div class="col-3 offset-3">
-                    <button type="button" class="btn btn-primary" data-toggle="ajax-modal-portfolio" data-target="#addTrade" data-url="@Url.Action("AddTrade", "Trade", new { id=Model.PortfolioId})">Add a new Trade</button>
+                    <button type="button" class="btn btn-primary" data-toggle="ajax-modal-trade" data-target="#addTrade" data-url="@Url.Action("AddTrade", "Trade", new { id=Model.PortfolioId})">Add a new Trade</button>
                 </div>
                 <p>______________________________________</p>
                 <p>My DataTable will go here</p>
@@ -24,7 +24,9 @@
         </div>
     </div>
 </div>
-<!--<script src="~/js/modals.js"></script>  makes it work but keeps duplicating-->
+<div id="modal-placeholder-trades"></div>
+<script src="~/js/Trademodals.js"></script>
+
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
 }

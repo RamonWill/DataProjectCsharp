@@ -1,6 +1,6 @@
 ﻿(function ($) {
-    var placeHolderElement = $('#modal-placeholder');
-    $('button[data-toggle="ajax-modal-portfolio"]').click(function (event) {
+    var placeHolderElement = $('#modal-placeholder-trades');
+    $('button[data-toggle="ajax-modal-trade"]').click(function (event) {
         var url = $(this).data('url');
         $.get(url).done(function (data) {
             placeHolderElement.html(data);
@@ -24,20 +24,3 @@
         });
     });
 })($);
-
-
-(function ($) {
-    var placeHolderElement = $('#modal-placeholder2');
-    $('button[data-toggle="ajax-modal-view-trades"]').click(function (event) {
-        var url = $(this).data('url');
-        $.get(url).done(function (data) {
-            placeHolderElement.html(data);
-            placeHolderElement.find('.modal').modal('show');
-        });
-    });
-    placeHolderElement.on('click', '[data-dismiss="modal"]', function (event) {
-        placeHolderElement.find('.modal').modal('hide');
-    });
-})($);
-
-

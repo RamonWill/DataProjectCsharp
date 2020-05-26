@@ -12,7 +12,7 @@
             <div class="modal-body">
                 <p>This is where my Form will go.</p>
                 <!--<div class="text-danger" asp-validation-summary="All"></div>-->
-                <form method="post" asp-action="AddPortfolio">
+                <form method="post" asp-action="AddPortfolio" asp-controller="Portfolio">
                     <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
                     <div class="form-group row">
                         <div class="col-4">
@@ -26,8 +26,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-save="modal">Save changes</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" data-save="modal-portfolio">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal-portfolio">Cancel</button>
             </div>
         </div>
     </div>
