@@ -7,7 +7,7 @@
             placeHolderElement.find('.modal').modal('show');
         });
     });
-    placeHolderElement.on('click', '[data-save="modal"]', function (event) {
+    placeHolderElement.on('click', '[data-save="modal-trade"]', function (event) {
         event.preventDefault();
         var form = $(this).parents('.modal').find('form');
         var actionUrl = form.attr('action');
