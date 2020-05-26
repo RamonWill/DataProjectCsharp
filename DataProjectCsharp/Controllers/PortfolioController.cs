@@ -80,7 +80,7 @@ namespace DataProjectCsharp.Controllers
             {
                 _db.Portfolios.Add(portfolio);
                 await _db.SaveChangesAsync();
-                return RedirectToAction(nameof(Portfolios));
+                return PartialView("_PortfolioModalPartial", portfolio);
             }
             else
             {

@@ -17,7 +17,6 @@
             var newModalBody = $('.modal-body', data);
             placeHolderElement.find('.modal-body').replaceWith(newModalBody);
 
-            // #TO DO (minor bug) - if successful the page is redirected and the redirected page doesn't have a IsValid key so it stay undefined.
             var isValid = newModalBody.find('[name="IsValid"]').val() == 'True';
             if (isValid) {
                 placeHolderElement.find('.modal').modal('hide');
