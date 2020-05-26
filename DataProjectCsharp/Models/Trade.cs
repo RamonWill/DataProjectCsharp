@@ -15,11 +15,11 @@ namespace DataProjectCsharp.Models
         public string Ticker { get; set; }
         [Required]
         public long Quantity { get; set; }
-        [Required, Column(TypeName ="decimal(18,4)")]
+        [Required, Column(TypeName ="decimal(18,4)"), Range(0, long.MaxValue, ErrorMessage = "Prices can not be negative numbers.")]
         public decimal Price { get; set; }
 
         [Required]
-        [DisplayFormat(ApplyFormatInEditMode =true, DataFormatString ="{0:d}")]
+        [DisplayFormat(ApplyFormatInEditMode =true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime TradeDate { get; set; }
 
         [DataType(DataType.MultilineText)]

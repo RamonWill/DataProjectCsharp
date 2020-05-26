@@ -13,8 +13,9 @@
             <div class="modal-body">
                 <p>This is where my Form will go.</p>
                 <!--<div class="text-danger" asp-validation-summary="All"></div>-->
-                <form method="post" asp-action="AddTrade">
+                <form method="post" asp-action="AddTrade" asp-controller="Trade">
                     <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                    <input asp-for="PortfolioId" type="hidden" value="@Model.PortfolioId" />
                     <div class="form-group row">
                         <div class="col-4">
                             <label asp-for="Ticker">Ticker</label>
@@ -23,11 +24,39 @@
                             <input asp-for="Ticker" class="form-control" />
                             <span asp-validation-for="Ticker" class="text-danger"></span>
                         </div>
+                        <div class="col-4">
+                            <label asp-for="Quantity">Quantity</label>
+                        </div>
+                        <div class="col-6">
+                            <input asp-for="Quantity" class="form-control" />
+                            <span asp-validation-for="Quantity" class="text-danger"></span>
+                        </div>
+                        <div class="col-4">
+                            <label asp-for="Price">Price</label>
+                        </div>
+                        <div class="col-6">
+                            <input asp-for="Price" class="form-control" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                        <div class="col-4">
+                            <label asp-for="TradeDate">Trade Date</label>
+                        </div>
+                        <div class="col-6">
+                            <input asp-for="TradeDate" class="form-control" value="@Model.TradeDate.Date.ToString("s")" />
+                            <span asp-validation-for="TradeDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-4">
+                            <label asp-for="Comments">Comments</label>
+                        </div>
+                        <div class="col-6">
+                            <textarea asp-for="Comments" class="form-control"></textarea>
+                            <span asp-validation-for="Comments" class="text-danger"></span>
+                        </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-save="modal">Save changes</button>
+                <button type="button" class="btn btn-primary" data-save="modal-trade">Save changes</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
             </div>
         </div>

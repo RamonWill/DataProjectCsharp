@@ -64,5 +64,19 @@ namespace DataProjectCsharp.Controllers
             trade.PortfolioId = id.GetValueOrDefault();
             return PartialView("_TradeEntryModalPartial", trade);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddTrade([Bind("TradeId, Ticker, Quantity, Price, TradeDate, Comments, CreatedTimeStamp, UserId, PortfolioId")] Trade trade)
+        {
+            if (!ModelState.IsValid)
+            {
+                return PartialView("_TradeEntryModalPartial", trade);
+            }
+            trade.UserId = _userId;
+            _db.Trades.Add(trade);
+            await _db.SaveChangesAsync();
+            return PartialView("_TradeEntryModalParial", trade);
+        }
     }
 }

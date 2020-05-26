@@ -17,6 +17,20 @@
                 </div>
                 <p>______________________________________</p>
                 <p>My DataTable will go here</p>
+                
+                    @if (@Model.Trades.FirstOrDefault() != null)
+                    {
+                        @foreach (Trade trade in @Model.Trades)
+                        {
+                            <div class="row">
+                                <div class="col-4">
+                                    <p>@trade.Ticker, @trade.Quantity, @trade.Price, @trade.TradeDate</p>
+                                </div>
+                            </div>
+                        }
+                    }
+                    <p>______________________________________</p>
+          
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
