@@ -3,7 +3,7 @@
 
 
 <div class="modal fade" id="viewTrades">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class=" = modal-header">
                 <h5 class="modal-title" id="viewTradeLabel">Trades for portfolio @Model.Name</h5>
@@ -15,22 +15,42 @@
                 <div class="col-3 offset-3">
                     <button type="button" class="btn btn-primary" data-toggle="ajax-modal-trade" data-target="#addTrade" data-url="@Url.Action("AddTrade", "Trade", new { id=Model.PortfolioId})">Add a new Trade</button>
                 </div>
-                <p>______________________________________</p>
-                <p>My DataTable will go here</p>
-                
-                    @if (@Model.Trades.FirstOrDefault() != null)
-                    {
-                        @foreach (Trade trade in @Model.Trades)
-                        {
-                            <div class="row">
-                                <div class="col-4">
-                                    <p>@trade.Ticker, @trade.Quantity, @trade.Price, @trade.TradeDate</p>
-                                </div>
-                            </div>
-                        }
-                    }
-                    <p>______________________________________</p>
-          
+                <p>My DataTable will go here if the portfolio is not empty</p>
+                @if (@Model.Trades.FirstOrDefault() != null)
+                {
+                    <div class="col-12">
+                        <table class="table table-striped table-bordered" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Ticker</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Trade Date</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (@Model.Trades.FirstOrDefault() != null)
+                                {
+
+                                    @foreach (Trade trade in @Model.Trades)
+                                    {
+                                        <tr>
+                                            <td>@trade.Ticker</td>
+                                            <td>@trade.Quantity</td>
+                                            <td>@trade.Price</td>
+                                            <td>@trade.TradeDate.ToString("dd/MM/yyyy")</td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary">Edit</button>
+                                                <button type="button" class="btn btn-primary">Delete</button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
