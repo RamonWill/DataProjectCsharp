@@ -41,8 +41,10 @@
                                             <td>@trade.Price</td>
                                             <td>@trade.TradeDate.ToString("dd/MM/yyyy")</td>
                                             <td>
-                                                <button type="button" class="btn btn-primary">Edit</button>
-                                                <button type="button" class="btn btn-primary">Delete</button>
+                                                <button type="button" class="btn btn-primary" data-toggle="ajax-modal-trade" data-target="#editTrade" data-url="@Url.Action("EditTrade", "Trade", new { id=trade.TradeId})">Edit</button>
+                                                <form method="post" asp-action="DeleteTrade" asp-controller="Trade" asp-route-id="@trade.TradeId">
+                                                    <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this trade?')"/>
+                                                </form>
                                             </td>
                                         </tr>
                                     }

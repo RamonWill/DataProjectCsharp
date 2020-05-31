@@ -1,0 +1,68 @@
+﻿@model DataProjectCsharp.Models.Trade
+
+
+<div class="modal fade" id="editTrade" style="z-index:1057;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class=" = modal-header">
+                <h5 class="modal-title" id="editTradeLabel">Add a new Trade</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>This is where my Form will go.</p>
+                <!--<div class="text-danger" asp-validation-summary="All"></div>-->
+                <form method="post" asp-action="EditTrade" asp-controller="Trade">
+                    <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                    <input asp-for="PortfolioId" type="hidden" value="@Model.PortfolioId" />
+                    <input asp-for="TradeId" type="hidden" value="@Model.TradeId" />
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Ticker">Ticker</label>
+                        </div>
+                        <div class="col-6">
+                            <input asp-for="Ticker" class="form-control" value="@Model.Ticker" readonly="readonly" />
+                            <span asp-validation-for="Ticker" class="text-danger"></span>
+                        </div>
+                        <div class="col-4">
+                            <label asp-for="Quantity">Quantity</label>
+                        </div>
+                        <div class="col-6">
+                            <input asp-for="Quantity" class="form-control" value="@Model.Quantity" />
+                            <span asp-validation-for="Quantity" class="text-danger"></span>
+                        </div>
+                        <div class="col-4">
+                            <label asp-for="Price">Price</label>
+                        </div>
+                        <div class="col-6">
+                            <input asp-for="Price" class="form-control" value="@Model.Price" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                        <div class="col-4">
+                            <label asp-for="TradeDate">Trade Date</label>
+                        </div>
+                        <div class="col-6">
+                            <input asp-for="TradeDate" class="form-control" value="@Model.TradeDate.Date.ToString("s")" />
+                            <span asp-validation-for="TradeDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-4">
+                            <label asp-for="Comments">Comments</label>
+                        </div>
+                        <div class="col-6">
+                            <textarea asp-for="Comments" class="form-control" value="@Model.Comments"></textarea>
+                            <span asp-validation-for="Comments" class="text-danger"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-save="modal-trade">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

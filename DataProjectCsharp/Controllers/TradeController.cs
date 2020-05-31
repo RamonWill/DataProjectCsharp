@@ -76,7 +76,60 @@ namespace DataProjectCsharp.Controllers
             trade.UserId = _userId;
             _db.Trades.Add(trade);
             await _db.SaveChangesAsync();
-            return PartialView("_TradeEntryModalParial", trade);
+            return PartialView("_TradeEntryModalPartial", trade);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditTrade(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            Trade trade = await _db.Trades.FindAsync(id);
+            if (trade == null)
+            {
+                return NotFound();
+            }
+            return PartialView("_TradeEditModalPartial", trade);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditTrade(int id, [Bind("TradeId, Ticker, Quantity, Price, TradeDate, Comments, CreatedTimeStamp, UserId, PortfolioId")] Trade trade)
+        {
+            if (id != trade.TradeId)
+            {
+                return NotFound();
+            }
+            if (!ModelState.IsValid)
+            {
+                return PartialView("_TradeEditModalPartial", trade);
+            }
+            _db.Update(trade);
+            await _db.SaveChangesAsync();
+
+            return PartialView("_TradeEditModalPartial", trade);
+        }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteTrade(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var trade = await _db.Trades.FindAsync(id);
+            if (trade == null)
+            {
+                return NotFound();
+            }
+            _db.Trades.Remove(trade);
+            await _db.SaveChangesAsync();
+
+            return RedirectToAction("Portfolios", "Portfolio");
         }
     }
 }
