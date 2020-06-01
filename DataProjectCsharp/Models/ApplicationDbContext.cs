@@ -25,7 +25,13 @@ namespace DataProjectCsharp.Models
         public DbSet<Portfolio> Portfolios { get; set; }
         public DbSet<Trade> Trades { get; set; }
         public DbSet<TradeableSecurities> TradeableSecurities { get; set; }
+    }
 
+    public class ApplicationPricesDBContext: DbContext
+    {
+        public ApplicationPricesDBContext(DbContextOptions<ApplicationPricesDBContext> options):base(options)
+        {
+        }
 
     }
 }

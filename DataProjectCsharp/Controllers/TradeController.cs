@@ -91,6 +91,8 @@ namespace DataProjectCsharp.Controllers
             {
                 return NotFound();
             }
+
+            // In the partialview i need to keep the userid, createdtimestamp of the trade intact
             return PartialView("_TradeEditModalPartial", trade);
         }
 
