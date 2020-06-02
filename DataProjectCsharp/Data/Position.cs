@@ -8,7 +8,7 @@ namespace DataProjectCsharp.Data
 {
     public class Transaction
     {
-        //this is temporary, delete soon
+        //this is temporary, delete soon it is just a reference to work with
         public string ticker = "VENOM";
         public long quantity = 99;
         public decimal price = 12.3m;
@@ -49,7 +49,7 @@ namespace DataProjectCsharp.Data
     public class Position
     {
         // this object is comprised of a list of transactions. I can update the position object with transactions. Position.AddTransaction(Transaction)
-        // current limitation transactions will need to be added by the correct date for this to work.
+        // current limitation transactions will need to be added by the correct date order for this to work.
         private string symbol { get; set; }
         private decimal averageCost { get; set; }
         private long netQuantity { get; set; }
@@ -72,31 +72,31 @@ namespace DataProjectCsharp.Data
         {
             if (transaction.ticker != this.symbol)
             {
-                throw new InvalidOperationException("The transaction ticker does not match this positions ticker");
+                throw new InvalidOperationException("The transaction ticker does not match the ticker of this position");
             }
 
             OpenLots lot = new OpenLots(transaction.TradeDate, transaction.quantity, transaction.price);
 
-            // make sure a transaction cannot equal zero
+            // make sure a transaction cannot equal zero in my models
+            // position has no trades
             if(transaction.quantity * netQuantity == 0)
             {
                 this.isLong = (transaction.quantity >= 0);
-                openLots.Push(lot);
             }
-            //trades in diff direction
+
+            //trades in diff direction to position
             else if (transaction.quantity * netQuantity < 0)
             {
-                // long 100
                 while (openLots.Count > 0 && transaction.quantity != 0)
                 {
                     if(Math.Abs(transaction.quantity) >= Math.Abs(openLots.Peek().quantity))
                     {
-                        transaction.quantity -= openLots.Peek().quantity;
+                        transaction.quantity += openLots.Peek().quantity;
                         openLots.Pop();
                     }
                     else
                     {
-                        openLots.Peek().quantity -= transaction.quantity;
+                        openLots.Peek().quantity += transaction.quantity;
                         transaction.quantity = 0;
                     }
                 }
@@ -110,10 +110,12 @@ namespace DataProjectCsharp.Data
             {
                 openLots.Push(lot);
             }
-            /// i need to update position regardless, 
-            /// i need update the closed lots regardless(give it another name like trade summary), 
-            /// if transaction.quantity!=0 need to push the lots)
+
             UpdatePosition(transaction);
+            // i need to update position regardless, 
+            // i need update the closed lots regardless(give it another name like trade summary), 
+            // if transaction.quantity!=0 need to push the lots)
+
             //when all said and done, net position should equal total open lots
         }
 
@@ -133,10 +135,16 @@ namespace DataProjectCsharp.Data
         private void UpdatePosition(Transaction transaction)
         {
             this.netQuantity = this.openLots.Sum(lots => lots.quantity);
-            this.averageCost = GetAverageCost();
+            if (transaction.quantity==0 && this.openLots.Count > 0)
+            {
+                this.averageCost = this.openLots.Peek().price;
+            }
+            else
+            {
+                this.averageCost = GetAverageCost();
+            }            
             CheckDirection();
             AppendBreakdown(transaction.TradeDate);
-            
         }
 
         private void AppendBreakdown(DateTime tradeDate)
