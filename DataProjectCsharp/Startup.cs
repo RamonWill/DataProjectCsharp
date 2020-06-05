@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DataProjectCsharp.Data;
 using DataProjectCsharp.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -53,7 +54,10 @@ namespace DataProjectCsharp
                 
             });
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
-        
+            // Here I inject my AVConnection
+            AlphaVantageConnection AVConn = new AlphaVantageConnection(Configuration);
+            services.AddSingleton<AlphaVantageConnection>(AVConn);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

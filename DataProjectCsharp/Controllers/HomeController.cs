@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using DataProjectCsharp.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
+using DataProjectCsharp.Data;
 
 namespace DataProjectCsharp.Controllers
 {
@@ -14,10 +16,12 @@ namespace DataProjectCsharp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly AlphaVantageConnection _AVConn;
+        public HomeController(ILogger<HomeController> logger, AlphaVantageConnection AVConn)
         {
             _logger = logger;
+            _AVConn = AVConn;
+
         }
 
         public IActionResult Index()
