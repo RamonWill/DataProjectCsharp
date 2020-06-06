@@ -17,21 +17,16 @@ namespace DataProjectCsharp.Models
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            
             base.OnModelCreating(builder);
             builder.ApplyConfiguration(new RoleConfigurations());
             builder.ApplyConfiguration(new TradeConfigurations());
             builder.ApplyConfiguration(new PortfolioConfigurations());
+            
         }
         public DbSet<Portfolio> Portfolios { get; set; }
         public DbSet<Trade> Trades { get; set; }
         public DbSet<TradeableSecurities> TradeableSecurities { get; set; }
-    }
-
-    public class ApplicationPricesDBContext: DbContext
-    {
-        public ApplicationPricesDBContext(DbContextOptions<ApplicationPricesDBContext> options):base(options)
-        {
-        }
-
+        public DbSet<SecurityPrices> SecurityPrices { get; set; }
     }
 }
