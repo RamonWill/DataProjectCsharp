@@ -30,8 +30,6 @@ namespace DataProjectCsharp
         {
             services.AddDbContext<ApplicationDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDbContext<ApplicationPricesDBContext>(
-                options => options.UseSqlServer(Configuration.GetConnectionString("SecondaryConnection")));
             
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
