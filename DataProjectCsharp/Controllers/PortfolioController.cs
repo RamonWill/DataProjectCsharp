@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using DataProjectCsharp.Data;
 using DataProjectCsharp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.Analysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
@@ -34,9 +36,54 @@ namespace DataProjectCsharp.Controllers
             }
             else
             {
-                List<Portfolio> allUserPortfolios = _db.Portfolios.Where(p => p.UserId == _userId).ToList();
+                List<Portfolio> allUserPortfolios =  _db.Portfolios
+                                         .Where(p =>  p.UserId == _userId)
+                                         .Include(p => p.Trades)
+                                         .ToList();
                 return View(allUserPortfolios);
             }
+        }
+        public async Task<IActionResult> PositionBreakdown(int? portfolioId, string positionSymbol)
+        {
+
+            if (portfolioId == null || positionSymbol==null)
+            {
+                return NotFound();
+            }
+            // eager loading
+
+            // I will need to check if the trades are available first at some point i.e. use first or default.
+            List<Trade> allTrades =  await _db.Trades
+                         .Where(t => t.PortfolioId == portfolioId && t.UserId == _userId && t.Ticker == positionSymbol)
+                         .ToListAsync();
+            if (allTrades == null)
+            {
+                return NotFound();
+            }
+
+            PositionFormulas position = new PositionFormulas(positionSymbol);
+            foreach (Trade trade in allTrades)
+            {
+                position.AddTransaction(trade);
+            }
+            // ######################
+            // creating my dataframe for the prices
+            List<SecurityPrices> prices = await _db.SecurityPrices.Where(t => t.ticker == positionSymbol).OrderBy(t=> t.date).ToListAsync();
+            int size = prices.Count;
+            PrimitiveDataFrameColumn<DateTime> dateCol = new PrimitiveDataFrameColumn<DateTime>("date", size);
+            PrimitiveDataFrameColumn<decimal> priceCol = new PrimitiveDataFrameColumn<decimal>("price", size);
+            DataFrame pricesFrame = new DataFrame(dateCol, priceCol);
+            int counter = 0;
+            foreach(var row in pricesFrame.Rows)
+            {
+                row[0] = prices[counter].date;
+                row[1] = prices[counter].ClosePrice;
+                counter++;
+            }
+            position.CalculateDailyPerformance(pricesFrame);
+           
+            // #################################
+            return View(position.GetDailyPerformance());
         }
 
         public async Task<IActionResult> PortfolioBreakdown(int? id)
@@ -46,8 +93,11 @@ namespace DataProjectCsharp.Controllers
             {
                 return NotFound();
             }
-
-            Portfolio portfolio = await _db.Portfolios.FirstOrDefaultAsync(p => p.PortfolioId==id && p.UserId==_userId);
+            // eager loading
+            Portfolio portfolio = await _db.Portfolios
+                         .Where(p => p.PortfolioId == id && p.UserId == _userId)
+                         .Include(p => p.Trades)
+                         .FirstOrDefaultAsync();
             if (portfolio == null)
             {
                 return NotFound();

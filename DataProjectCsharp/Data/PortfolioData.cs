@@ -24,7 +24,8 @@ namespace DataProjectCsharp.Data
         public void AddPositon(PositionFormulas position)
         {
             // adds the position to the position list.
-            // maybe use inheritance for the position to create a positionCalculations class or something of that nature.
+            // append the position.GetDailyPerformance to the PortfolioTable initially.
+            // then every table appended after that is added on.
             this.positions.Add(position);
 
         }

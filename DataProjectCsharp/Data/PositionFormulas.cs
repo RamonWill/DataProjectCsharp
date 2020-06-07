@@ -16,9 +16,12 @@ namespace DataProjectCsharp.Data
             this.ValuationTable = new DataFrame();
         }
 
-
+        public DataFrame GetDailyPerformance()
+        {
+            return this.PerformanceTable;
+        }
         // Via inheritance i have inherited all the of position class attributes and methods.
-        public DataFrame GetDailyPerformance(DataFrame prices)
+        public void CalculateDailyPerformance(DataFrame prices)
         {
             if (this.PerformanceTable.Columns.Count != 0)
             {
@@ -29,7 +32,7 @@ namespace DataProjectCsharp.Data
             int pbRows = this.positionBreakdown.Count;
             if (pbRows == 0) //position is empty
             {
-                return this.PerformanceTable;
+                return; //this.PerformanceTable;
             }
 
             /// Take all prices from Database and columns with them and add those columns to the performance table
@@ -41,6 +44,10 @@ namespace DataProjectCsharp.Data
             PrimitiveDataFrameColumn<decimal> averageCost = new PrimitiveDataFrameColumn<decimal>("AverageCost", numberOfRows);
             PrimitiveDataFrameColumn<int> LongShort = new PrimitiveDataFrameColumn<int>("Long/Short", numberOfRows);
             PrimitiveDataFrameColumn<decimal> pctChange = new PrimitiveDataFrameColumn<decimal>("pct_change", numberOfRows);
+
+            //temporary
+            this.PerformanceTable = prices;
+            //
             this.PerformanceTable.Columns.Add(quantity);
             this.PerformanceTable.Columns.Add(averageCost);
             this.PerformanceTable.Columns.Add(LongShort);
@@ -55,7 +62,7 @@ namespace DataProjectCsharp.Data
                 {
                     break;
                 }
-                if ((string)row[0] == this.positionBreakdown[counter].date.ToString("dd/MM/yyyy"))
+                if (row[0].Equals(this.positionBreakdown[counter].date))
                 {
                     row[2] = this.positionBreakdown[counter].quantity;
                     row[3] = Math.Round(this.positionBreakdown[counter].averageCost, 4);
@@ -104,7 +111,8 @@ namespace DataProjectCsharp.Data
                 int sign = (int)row[4];
                 row[5] = Math.Round(((price / cost) - 1) * 100 * sign, 3);
             }
-            return FinalTable;
+            this.PerformanceTable = FinalTable;
+            //return FinalTable;
         }
 
         public DataFrame GetDailyValuation(DataFrame prices)

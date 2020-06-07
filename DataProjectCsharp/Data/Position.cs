@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataProjectCsharp.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,14 +7,6 @@ using System.Transactions;
 
 namespace DataProjectCsharp.Data
 {
-    public class Transaction
-    {
-        //this is temporary, delete soon it is just a reference to work with
-        public string ticker = "VENOM";
-        public long quantity = 99;
-        public decimal price = 12.3m;
-        public DateTime TradeDate = DateTime.Now;
-    }
 
     public class PositionSnapshot
     {
@@ -68,45 +61,45 @@ namespace DataProjectCsharp.Data
         }
 
 
-        public void AddTransaction(Transaction transaction)
+        public void AddTransaction(Trade transaction)
         {
-            if (transaction.ticker != this.symbol)
+            if (transaction.Ticker != this.symbol)
             {
                 throw new InvalidOperationException("The transaction ticker does not match the ticker of this position");
             }
 
-            OpenLots lot = new OpenLots(transaction.TradeDate, transaction.quantity, transaction.price);
+            OpenLots lot = new OpenLots(transaction.TradeDate, transaction.Quantity, transaction.Price);
 
             // make sure a transaction cannot equal zero in my models
             // position has no trades
-            if(transaction.quantity * netQuantity == 0)
+            if(transaction.Quantity * netQuantity == 0)
             {
-                this.isLong = (transaction.quantity >= 0);
+                this.isLong = (transaction.Quantity >= 0);
             }
 
             //trades in diff direction to position
-            else if (transaction.quantity * netQuantity < 0)
+            else if (transaction.Quantity * netQuantity < 0)
             {
-                while (openLots.Count > 0 && transaction.quantity != 0)
+                while (openLots.Count > 0 && transaction.Quantity != 0)
                 {
-                    if(Math.Abs(transaction.quantity) >= Math.Abs(openLots.Peek().quantity))
+                    if(Math.Abs(transaction.Quantity) >= Math.Abs(openLots.Peek().quantity))
                     {
-                        transaction.quantity += openLots.Peek().quantity;
+                        transaction.Quantity += openLots.Peek().quantity;
                         openLots.Pop();
                     }
                     else
                     {
-                        openLots.Peek().quantity += transaction.quantity;
-                        transaction.quantity = 0;
+                        openLots.Peek().quantity += transaction.Quantity;
+                        transaction.Quantity = 0;
                     }
                 }
-                if (transaction.quantity != 0)
+                if (transaction.Quantity != 0)
                 {
-                    lot.quantity = transaction.quantity;
+                    lot.quantity = transaction.Quantity;
                 }
 
             }
-            if (transaction.quantity != 0)
+            if (transaction.Quantity != 0)
             {
                 openLots.Push(lot);
             }
@@ -114,7 +107,7 @@ namespace DataProjectCsharp.Data
             UpdatePosition(transaction);
             // i need to update position regardless, 
             // i need update the closed lots regardless(give it another name like trade summary), 
-            // if transaction.quantity!=0 need to push the lots)
+            // if transaction.Quantity!=0 need to push the lots)
 
             //when all said and done, net position should equal total open lots
         }
@@ -136,10 +129,10 @@ namespace DataProjectCsharp.Data
             return this.positionBreakdown;
         }
 
-        private void UpdatePosition(Transaction transaction)
+        private void UpdatePosition(Trade transaction)
         {
             this.netQuantity = this.openLots.Sum(lots => lots.quantity);
-            if (transaction.quantity==0 && this.openLots.Count > 0)
+            if (transaction.Quantity==0 && this.openLots.Count > 0)
             {
                 this.averageCost = this.openLots.Peek().price;
             }
