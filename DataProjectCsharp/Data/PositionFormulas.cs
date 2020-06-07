@@ -20,6 +20,11 @@ namespace DataProjectCsharp.Data
         {
             return this.PerformanceTable;
         }
+
+        public DataFrame GetDailyValuation()
+        {
+            return this.ValuationTable;
+        }
         // Via inheritance i have inherited all the of position class attributes and methods.
         public void CalculateDailyPerformance(DataFrame prices)
         {
@@ -38,42 +43,42 @@ namespace DataProjectCsharp.Data
             /// Take all prices from Database and columns with them and add those columns to the performance table
             // then add new columns for the dataframe
             // modifies dataframe inplace.
-
-            long numberOfRows = prices.Rows.Count;
+            //this.PerformanceTable = prices;
+            DataFrame NewTable = prices;
+            long numberOfRows = NewTable.Rows.Count;
             PrimitiveDataFrameColumn<long> quantity = new PrimitiveDataFrameColumn<long>("Quantity", numberOfRows);
             PrimitiveDataFrameColumn<decimal> averageCost = new PrimitiveDataFrameColumn<decimal>("AverageCost", numberOfRows);
             PrimitiveDataFrameColumn<int> LongShort = new PrimitiveDataFrameColumn<int>("Long/Short", numberOfRows);
             PrimitiveDataFrameColumn<decimal> pctChange = new PrimitiveDataFrameColumn<decimal>("pct_change", numberOfRows);
 
-            //temporary
-            this.PerformanceTable = prices;
-            //
-            this.PerformanceTable.Columns.Add(quantity);
-            this.PerformanceTable.Columns.Add(averageCost);
-            this.PerformanceTable.Columns.Add(LongShort);
-            this.PerformanceTable.Columns.Add(pctChange);
+            NewTable.Columns.Add(quantity);
+            NewTable.Columns.Add(averageCost);
+            NewTable.Columns.Add(LongShort);
+            NewTable.Columns.Add(pctChange);
+            
+            // Column indices
+            int dateCol = 0;
+            int priceCol = 1;
+            int quantityCol = 2;
+            int averageCostCol = 3;
+            int signCol = 4;
+            int percentChangeCol = 5;
+
 
             // since merge and join arent ready yet use the below.
             int counter = 0;
-            foreach (var row in PerformanceTable.Rows)
+            for(int row=0; row<numberOfRows; row++)
             {
-
                 if (counter == pbRows)
                 {
                     break;
                 }
-                if (row[0].Equals(this.positionBreakdown[counter].date))
+
+                if(NewTable[row, dateCol].Equals(this.positionBreakdown[counter].date))
                 {
-                    row[2] = this.positionBreakdown[counter].quantity;
-                    row[3] = Math.Round(this.positionBreakdown[counter].averageCost, 4);
-                    if (this.positionBreakdown[counter].quantity > 0)
-                    {
-                        row[4] = 1;
-                    }
-                    else
-                    {
-                        row[4] = -1;
-                    }
+                    NewTable[row, quantityCol] = this.positionBreakdown[counter].quantity;
+                    NewTable[row, averageCostCol] = Math.Round(this.positionBreakdown[counter].averageCost, 4);
+                    NewTable[row, signCol] = (this.positionBreakdown[counter].quantity > 0) ? 1 : -1;
                     counter++;
                 }
             }
@@ -83,39 +88,41 @@ namespace DataProjectCsharp.Data
             long prevQuantity = 0;
             decimal prevAverageCost = 0;
             int prevLongShort = 0;
-            foreach (var row in PerformanceTable.Rows)
+
+            for(int row=0; row < numberOfRows; row++)
             {
-                if ((row[2] != null && !toFill) || (row[2] != null && toFill))
+                if ((NewTable[row, quantityCol] != null && !toFill) || (NewTable[row, quantityCol] != null && toFill))
                 {
                     toFill = true;
-                    prevQuantity = (long)row[2];
-                    prevAverageCost = (decimal)row[3];
-                    prevLongShort = (int)row[4];
+                    prevQuantity = (long)NewTable[row, quantityCol];
+                    prevAverageCost = (decimal)NewTable[row, averageCostCol];
+                    prevLongShort = (int)NewTable[row, signCol];
                 }
-                else if (row[2] == null && toFill)
+                else if (NewTable[row, quantityCol] == null && toFill)
                 {
-                    row[2] = prevQuantity;
-                    row[3] = prevAverageCost;
-                    row[4] = prevLongShort;
+                    NewTable[row, quantityCol] = prevQuantity;
+                    NewTable[row, averageCostCol] = prevAverageCost;
+                    NewTable[row, signCol] = prevLongShort;
                 }
             }
+
+
             // if the quantity is still null. make it long.MaxValue and then creates a new dataframe with that filtered info
-            PrimitiveDataFrameColumn<bool> boolFilter = PerformanceTable.Columns.GetPrimitiveColumn<long>("Quantity").FillNulls(long.MaxValue).ElementwiseNotEquals(long.MaxValue);
-            DataFrame FinalTable = PerformanceTable.Filter(boolFilter);
-
-            foreach (var row in FinalTable.Rows)
+            PrimitiveDataFrameColumn<bool> boolFilter = NewTable.Columns.GetPrimitiveColumn<long>("Quantity").FillNulls(long.MaxValue).ElementwiseNotEquals(long.MaxValue);
+            NewTable = NewTable.Filter(boolFilter);
+            numberOfRows = NewTable.Rows.Count;
+            for(int row = 0; row < numberOfRows; row++)
             {
-
-                decimal price = Convert.ToDecimal(row[1]);
-                decimal cost = (decimal)row[3];
-                int sign = (int)row[4];
-                row[5] = Math.Round(((price / cost) - 1) * 100 * sign, 3);
+                decimal price = Convert.ToDecimal(NewTable[row, priceCol]);
+                decimal cost = (decimal)NewTable[row, averageCostCol];
+                int sign = (int)NewTable[row, signCol];
+                NewTable[row, percentChangeCol] = Math.Round(((price / cost) - 1) * 100 * sign, 3);
             }
-            this.PerformanceTable = FinalTable;
-            //return FinalTable;
+
+            this.PerformanceTable = NewTable;
         }
 
-        public DataFrame GetDailyValuation(DataFrame prices)
+        public void CalculateDailyValuation(DataFrame prices)
         {
             if (this.ValuationTable.Columns.Count != 0)
             {
@@ -125,7 +132,7 @@ namespace DataProjectCsharp.Data
             int pbRows = this.positionBreakdown.Count;
             if (pbRows == 0) //position is empty
             {
-                return this.ValuationTable;
+                return;
             }
 
             /// Take all prices from Database and columns with them and add those columns to the performance table
@@ -183,7 +190,7 @@ namespace DataProjectCsharp.Data
                 row[3] = Math.Round(price * units, 4);
             }
             Console.WriteLine(FinalTable);
-            return FinalTable;
+            this.ValuationTable = FinalTable;
         }
     }
 }
