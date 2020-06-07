@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using DataProjectCsharp.Data;
 using DataProjectCsharp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -20,12 +21,14 @@ namespace DataProjectCsharp.Controllers
         private readonly ApplicationDbContext _db;
         private readonly UserManager<User> _userManager;
         private readonly string _userId;
+        private readonly AlphaVantageConnection _avConn;
 
-        public TradeController(ApplicationDbContext db, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor)
+        public TradeController(ApplicationDbContext db, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor, AlphaVantageConnection avConn)
         {
             this._db = db;
             this._userManager = userManager;
             this._userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            this._avConn = avConn;
         }
 
         // GET: /<controller>/
@@ -76,6 +79,20 @@ namespace DataProjectCsharp.Controllers
             trade.UserId = _userId;
             _db.Trades.Add(trade);
             await _db.SaveChangesAsync();
+
+            // test adding prices to DB
+            SecurityPrices security = _db.SecurityPrices.Where(sp=> sp.ticker==trade.Ticker).FirstOrDefault();
+            if (security == null)
+            {
+                List<AlphaVantageSecurityData> prices = _avConn.GetDailyPrices(trade.Ticker);
+                
+                foreach(AlphaVantageSecurityData price in prices)
+                {
+                    SecurityPrices newPrice = new SecurityPrices {date=price.Timestamp, ClosePrice=price.Close, ticker=trade.Ticker };
+                    _db.SecurityPrices.Add(newPrice);
+                }
+                await _db.SaveChangesAsync();
+            }
             return PartialView("_TradeEntryModalPartial", trade);
         }
 
