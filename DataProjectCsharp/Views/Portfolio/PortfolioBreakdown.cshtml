@@ -5,3 +5,14 @@
 @model DataProjectCsharp.Models.Portfolio;
 <h1>PortfolioBreakdown for @Model.Name</h1>
 
+<h4>An overview of the trades and links to trade breakdowns which will be there own pages</h4>
+
+@if (@Model.Trades.FirstOrDefault() != null)
+{
+
+    @foreach (Trade trade in @Model.Trades)
+    {
+        <p>@trade.Quantity</p>
+        <a asp-action="PositionBreakdown" asp-route-PortfolioId="@Model.PortfolioId" asp-route-positionSymbol="@trade.Ticker" \>Breakdown for @trade.Ticker </a>
+    }
+}

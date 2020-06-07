@@ -1,0 +1,12 @@
+﻿@model Microsoft.Data.Analysis.DataFrame
+
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<h4>Breakdown for Security</h4>
+
+
+@foreach(var row in Model.Rows)
+{
+    <p>@row[0] @row[1] @row[2] @row[3] @row[4] @row[5]%</p>
+}
