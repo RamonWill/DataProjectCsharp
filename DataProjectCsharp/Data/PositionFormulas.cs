@@ -139,27 +139,34 @@ namespace DataProjectCsharp.Data
             // then add new columns for the dataframe
             // modifies dataframe inplace.
 
-            long rowsnumber = prices.Rows.Count;
+            DataFrame NewTable = prices;
+            long numberOfRows = NewTable.Rows.Count;
+            //long rowsnumber = prices.Rows.Count;
             // if i was using an actual datetime from the database i could use the filter.
             string title = $"{this.symbol}_MarketValue";
 
-            PrimitiveDataFrameColumn<long> quantity = new PrimitiveDataFrameColumn<long>("Quantity", rowsnumber);
-            PrimitiveDataFrameColumn<decimal> marketValue = new PrimitiveDataFrameColumn<decimal>(title, rowsnumber);
-            prices.Columns.Add(quantity);
-            prices.Columns.Add(marketValue);
+            PrimitiveDataFrameColumn<long> quantity = new PrimitiveDataFrameColumn<long>("Quantity", numberOfRows);
+            PrimitiveDataFrameColumn<decimal> marketValue = new PrimitiveDataFrameColumn<decimal>(title, numberOfRows);
+            NewTable.Columns.Add(quantity);
+            NewTable.Columns.Add(marketValue);
 
             // since merge and join arent ready yet use the below.
             int counter = 0;
-            foreach (var row in prices.Rows)
-            {
 
+            int dateCol = 0;
+            int priceCol = 1;
+            int quantityCol = 2;
+            int marketValueCol = 3;
+
+            for(int row = 0; row < numberOfRows; row++)
+            {
                 if (counter == pbRows)
                 {
                     break;
                 }
-                if ((string)row[0] == this.positionBreakdown[counter].date.ToString("dd/MM/yyyy"))
+                if (NewTable[row, dateCol].Equals(this.positionBreakdown[counter].date))
                 {
-                    row[2] = this.positionBreakdown[counter].quantity;
+                    NewTable[row, quantityCol] = this.positionBreakdown[counter].quantity;
                     counter++;
                 }
             }
@@ -167,30 +174,34 @@ namespace DataProjectCsharp.Data
             // since fill nulls cant forwardfill use the below.
             bool toFill = false;
             long prevQuantity = 0;
-            foreach (var row in prices.Rows)
+
+            for(int row=0; row < numberOfRows; row++)
             {
-                if ((row[2] != null && !toFill) || (row[2] != null && toFill))
+                if((NewTable[row,quantityCol] != null && !toFill) || (NewTable[row, quantityCol] != null && toFill))
                 {
                     toFill = true;
-                    prevQuantity = (long)row[2];
+                    prevQuantity = (long)NewTable[row, quantityCol];
                 }
-                else if (row[2] == null && toFill)
+                else if (NewTable[row, quantityCol] == null && toFill)
                 {
-                    row[2] = prevQuantity;
+                    NewTable[row, quantityCol] = prevQuantity;
                 }
             }
-            // if the quantity is still null. make it long.MaxValue and then creates a new dataframe with that filtered info
-            PrimitiveDataFrameColumn<bool> boolFilter = prices.Columns.GetPrimitiveColumn<long>("Quantity").FillNulls(long.MaxValue).ElementwiseNotEquals(long.MaxValue);
-            DataFrame FinalTable = prices.Filter(boolFilter);
-            foreach (var row in FinalTable.Rows)
-            {
 
-                decimal price = Convert.ToDecimal(row[1]);
-                long units = (long)row[2]; //quantity
-                row[3] = Math.Round(price * units, 4);
+            // if the quantity is still null. make it long.MaxValue and then creates a new dataframe with that filtered info
+            PrimitiveDataFrameColumn<bool> boolFilter = NewTable.Columns.GetPrimitiveColumn<long>("Quantity").FillNulls(long.MaxValue).ElementwiseNotEquals(long.MaxValue);
+            NewTable = NewTable.Filter(boolFilter);
+            numberOfRows = NewTable.Rows.Count;
+            for(int row=0; row < numberOfRows; row++)
+            {
+                decimal price = Convert.ToDecimal(NewTable[row, priceCol]);
+                long units = (long)NewTable[row, quantityCol]; //quantity
+                NewTable[row, marketValueCol] = Math.Round(price * units, 4);
             }
-            Console.WriteLine(FinalTable);
-            this.ValuationTable = FinalTable;
+
+            NewTable.Columns.Remove("price");
+            NewTable.Columns.Remove("Quantity");
+            this.ValuationTable = NewTable;
         }
     }
 }

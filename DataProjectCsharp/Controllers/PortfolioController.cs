@@ -53,6 +53,7 @@ namespace DataProjectCsharp.Controllers
             // eager loading
 
             // I will need to check if the trades are available first at some point i.e. use first or default.
+            // needs to include order by date
             List<Trade> allTrades =  await _db.Trades
                          .Where(t => t.PortfolioId == portfolioId && t.UserId == _userId && t.Ticker == positionSymbol)
                          .ToListAsync();
@@ -102,7 +103,50 @@ namespace DataProjectCsharp.Controllers
             {
                 return NotFound();
             }
+            // will i need to load in all the trades(ordered by date and then ticker), create a position obj and then all the prices for the calcs?
+            // the add them all into a portfolio? and then the valuation for the portfolio..
+            // get a list of tradenames. create a position with it. for each name get all trades. add them to posiiton, then get security price and thus valuation, then add to portfolio object
 
+            List<Trade> allTrades = await _db.Trades
+                                             .Where(t => t.PortfolioId == id && t.UserId == _userId)
+                                             .OrderBy(t => t.TradeDate)
+                                             .ToListAsync();
+            // distinct tickers
+            List<string> tickers = new List<string>();
+            foreach (Trade trade in allTrades)
+            {
+                if (!tickers.Contains(trade.Ticker))
+                {
+                    tickers.Add(trade.Ticker);
+                }
+            }
+            PortfolioData userPortfolio = new PortfolioData();
+            foreach(string ticker in tickers)
+            {
+                PositionFormulas position = new PositionFormulas(ticker);
+                foreach(Trade trade in allTrades)
+                {
+                    if (trade.Ticker == ticker)
+                    {
+                        position.AddTransaction(trade);
+                    }
+                }
+                List<SecurityPrices> prices = await _db.SecurityPrices.Where(t => t.ticker == ticker).OrderBy(t => t.date).ToListAsync();
+                int size = prices.Count;
+                PrimitiveDataFrameColumn<DateTime> dateCol = new PrimitiveDataFrameColumn<DateTime>("date", size);
+                PrimitiveDataFrameColumn<decimal> priceCol = new PrimitiveDataFrameColumn<decimal>("price", size);
+                DataFrame pricesFrame = new DataFrame(dateCol, priceCol);
+                int counter = 0;
+                foreach (var row in pricesFrame.Rows)
+                {
+                    row[0] = prices[counter].date;
+                    row[1] = prices[counter].ClosePrice;
+                    counter++;
+                }
+                position.CalculateDailyValuation(pricesFrame);
+                userPortfolio.AddPositon(position);
+            }
+            System.Diagnostics.Debug.WriteLine(userPortfolio.GetValuation());
             // At some point i will need to pass trades into here also.
             // Or maybe I WONT NEED TO. Portfolio has an icollection i can iterate thorugh
             return View(portfolio);
