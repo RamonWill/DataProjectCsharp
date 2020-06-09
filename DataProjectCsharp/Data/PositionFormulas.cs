@@ -108,7 +108,7 @@ namespace DataProjectCsharp.Data
 
 
             // if the quantity is still null. make it long.MaxValue and then creates a new dataframe with that filtered info
-            PrimitiveDataFrameColumn<bool> boolFilter = NewTable.Columns.GetPrimitiveColumn<long>("Quantity").FillNulls(long.MaxValue).ElementwiseNotEquals(long.MaxValue);
+            PrimitiveDataFrameColumn<bool> boolFilter = NewTable.Columns.GetPrimitiveColumn<long>("Quantity").FillNulls(long.MaxValue,true).ElementwiseNotEquals(long.MaxValue);
             NewTable = NewTable.Filter(boolFilter);
             numberOfRows = NewTable.Rows.Count;
             for(int row = 0; row < numberOfRows; row++)
