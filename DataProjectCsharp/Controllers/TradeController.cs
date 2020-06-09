@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using DataProjectCsharp.Data;
 using DataProjectCsharp.Models;
+using DataProjectCsharp.Models.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -18,14 +19,16 @@ namespace DataProjectCsharp.Controllers
     [Authorize]
     public class TradeController : Controller
     {
-        private readonly ApplicationDbContext _db;
+        
         private readonly UserManager<User> _userManager;
         private readonly string _userId;
         private readonly AlphaVantageConnection _avConn;
+        private IRepository _repo;
 
-        public TradeController(ApplicationDbContext db, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor, AlphaVantageConnection avConn)
+        public TradeController(IRepository repo, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor, AlphaVantageConnection avConn)
         {
-            this._db = db;
+            this._repo = repo;
+            
             this._userManager = userManager;
             this._userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             this._avConn = avConn;
@@ -41,12 +44,9 @@ namespace DataProjectCsharp.Controllers
                 return NotFound();
             }
             // if this portfolio doesnt belong to the user return not found
-            
+
             // This is eager loading  trades will be in the trade section
-            Portfolio portfolio = _db.Portfolios
-                                     .Where(p => p.PortfolioId == id && p.UserId == _userId)
-                                     .Include(p => p.Trades)
-                                     .FirstOrDefault();
+            Portfolio portfolio = _repo.GetUserPortfolio(id, _userId);
             
             if (portfolio == null)
             {
@@ -77,33 +77,34 @@ namespace DataProjectCsharp.Controllers
                 return PartialView("_TradeEntryModalPartial", trade);
             }
             trade.UserId = _userId;
-            _db.Trades.Add(trade);
-            await _db.SaveChangesAsync();
+            _repo.AddTrade(trade);
+            await _repo.SaveChangesAsync();
 
             // test adding prices to DB
-            SecurityPrices security = _db.SecurityPrices.Where(sp=> sp.ticker==trade.Ticker).FirstOrDefault();
-            if (security == null)
+            bool isSecurityStored = _repo.IsSecurityStored(trade.Ticker);
+            if (!isSecurityStored)
             {
+                // Later on create logic that stores the security price
                 List<AlphaVantageSecurityData> prices = _avConn.GetDailyPrices(trade.Ticker);
                 
                 foreach(AlphaVantageSecurityData price in prices)
                 {
                     SecurityPrices newPrice = new SecurityPrices {date=price.Timestamp, ClosePrice=price.Close, ticker=trade.Ticker };
-                    _db.SecurityPrices.Add(newPrice);
+                    _repo.AddSecurityPrice(newPrice);
                 }
-                await _db.SaveChangesAsync();
+                await _repo.SaveChangesAsync();
             }
             return PartialView("_TradeEntryModalPartial", trade);
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditTrade(int? id)
+        public IActionResult EditTrade(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            Trade trade = await _db.Trades.FindAsync(id);
+            Trade trade = _repo.GetTrade(id);
             if (trade == null)
             {
                 return NotFound();
@@ -125,8 +126,9 @@ namespace DataProjectCsharp.Controllers
             {
                 return PartialView("_TradeEditModalPartial", trade);
             }
-            _db.Update(trade);
-            await _db.SaveChangesAsync();
+
+            _repo.UpdateTrade(trade);
+            await _repo.SaveChangesAsync();
 
             return PartialView("_TradeEditModalPartial", trade);
         }
@@ -140,13 +142,14 @@ namespace DataProjectCsharp.Controllers
                 return NotFound();
             }
 
-            var trade = await _db.Trades.FindAsync(id);
+            Trade trade = _repo.GetTrade(id);
             if (trade == null)
             {
                 return NotFound();
             }
-            _db.Trades.Remove(trade);
-            await _db.SaveChangesAsync();
+
+            _repo.RemoveTrade(trade);
+            await _repo.SaveChangesAsync();
 
             return RedirectToAction("Portfolios", "Portfolio");
         }

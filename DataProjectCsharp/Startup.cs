@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataProjectCsharp.Data;
 using DataProjectCsharp.Models;
+using DataProjectCsharp.Models.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,7 +31,9 @@ namespace DataProjectCsharp
         {
             services.AddDbContext<ApplicationDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            
+
+            services.AddTransient<IRepository, Repository>();
+
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.Configure<IdentityOptions>(options => 

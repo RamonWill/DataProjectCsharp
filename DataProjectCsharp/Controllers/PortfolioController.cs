@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using DataProjectCsharp.Data;
 using DataProjectCsharp.Models;
+using DataProjectCsharp.Models.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -21,25 +22,24 @@ namespace DataProjectCsharp.Controllers
         private readonly ApplicationDbContext _db;
         private readonly UserManager<User> _userManager;
         private readonly string _userId;
-        public PortfolioController(ApplicationDbContext db, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor)
+        private IRepository _repo;
+        public PortfolioController(IRepository repo, ApplicationDbContext db, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor)
         {
+            this._repo = repo;
             this._db = db;
             this._userManager = userManager;
             this._userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
         public IActionResult Portfolios()
         {
-            var firstPortfolio = _db.Portfolios.FirstOrDefault(p => p.UserId == _userId);
-            if (firstPortfolio == null)
+            bool hasPortfolio = _repo.PortfoliosExists(_userId);
+            if (!hasPortfolio)
             {
                 return View();
             }
             else
             {
-                List<Portfolio> allUserPortfolios =  _db.Portfolios
-                                         .Where(p =>  p.UserId == _userId)
-                                         .Include(p => p.Trades)
-                                         .ToList();
+                List<Portfolio> allUserPortfolios = _repo.GetAllUserPortfolios(_userId);
                 return View(allUserPortfolios);
             }
         }
@@ -294,11 +294,11 @@ namespace DataProjectCsharp.Controllers
             }
             
             portfolio.UserId = _userId;
-            var isDuplicatePortfolio = _db.Portfolios.Any(p => p.Name == portfolio.Name && p.UserId == _userId);
+            bool isDuplicatePortfolio = _repo.IsDuplicatePortfolio(portfolio.Name, _userId);
             if (!isDuplicatePortfolio)
             {
-                _db.Portfolios.Add(portfolio);
-                await _db.SaveChangesAsync();
+                _repo.AddPortfolio(portfolio);
+                await _repo.SaveChangesAsync();
                 return PartialView("_PortfolioModalPartial", portfolio);
             }
             else
