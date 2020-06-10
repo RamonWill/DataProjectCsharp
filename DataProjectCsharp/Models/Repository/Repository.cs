@@ -14,6 +14,7 @@ namespace DataProjectCsharp.Models.Repository
         public Repository(ApplicationDbContext db)
         {
             this._db = db;
+            
         }
 
         public bool PortfoliosExists(string userId)
@@ -48,7 +49,7 @@ namespace DataProjectCsharp.Models.Repository
                     .ToList();
         }
 
-        public List<Trade> GetAllUserTrades(int portfolioId, string userId)
+        public List<Trade> GetAllUserTrades(int? portfolioId, string userId)
         {
             return _db.Trades
                     .Where(t => t.PortfolioId == portfolioId && t.UserId == userId)
@@ -93,6 +94,14 @@ namespace DataProjectCsharp.Models.Repository
         public bool IsSecurityStored(string symbol)
         {
             return (_db.SecurityPrices.Where(sp => sp.ticker == symbol).FirstOrDefault() != null);
+        }
+
+        public List<Trade> GetTradesBySymbol(int? portfolioId, string userId, string symbol)
+        {
+           return  _db.Trades
+                    .Where(t => t.PortfolioId == portfolioId && t.UserId == userId && t.Ticker == symbol)
+                    .OrderBy(t => t.TradeDate)
+                    .ToList();
         }
     }
 }

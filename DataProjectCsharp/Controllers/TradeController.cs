@@ -23,12 +23,11 @@ namespace DataProjectCsharp.Controllers
         private readonly UserManager<User> _userManager;
         private readonly string _userId;
         private readonly AlphaVantageConnection _avConn;
-        private IRepository _repo;
+        private readonly IRepository _repo;
 
         public TradeController(IRepository repo, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor, AlphaVantageConnection avConn)
         {
             this._repo = repo;
-            
             this._userManager = userManager;
             this._userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             this._avConn = avConn;
@@ -45,7 +44,6 @@ namespace DataProjectCsharp.Controllers
             }
             // if this portfolio doesnt belong to the user return not found
 
-            // This is eager loading  trades will be in the trade section
             Portfolio portfolio = _repo.GetUserPortfolio(id, _userId);
             
             if (portfolio == null)

@@ -16,8 +16,8 @@ namespace DataProjectCsharp.Models.Repository
         // void RemovePortfolio
         // void UpdatePortfolio
 
-            //getalltradesbyticker
-        List<Trade> GetAllUserTrades(int portfolioId, string userId);
+
+        List<Trade> GetAllUserTrades(int? portfolioId, string userId);
         Trade GetTrade(int? tradeId);
         void AddTrade(Trade trade);
         void UpdateTrade(Trade trade);
@@ -29,5 +29,6 @@ namespace DataProjectCsharp.Models.Repository
         bool IsSecurityStored(string symbol);
         void AddSecurityPrice(SecurityPrices price);
 
+        List<Trade> GetTradesBySymbol(int? portfolioId, string userId, string symbol);
     }
 }
