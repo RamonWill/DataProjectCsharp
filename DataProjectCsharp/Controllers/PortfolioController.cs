@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using DataProjectCsharp.Data;
 using DataProjectCsharp.Models;
+using DataProjectCsharp.Models.DataViewModels;
 using DataProjectCsharp.Models.Repository;
 using DataProjectCsharp.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -55,15 +56,18 @@ namespace DataProjectCsharp.Controllers
                 return NotFound();
             }
 
-            DataFrame positionPerformance = _service.GetPositionPerformance(portfolioId, _userId, positionSymbol);
-            if (positionPerformance == null)
+            PositionFormulas position = _service.GetPositionData(portfolioId, _userId, positionSymbol);
+            if (position == null)
             {
                 return NotFound();
             }
-            return View(positionPerformance);
+            string portfolioName = _repo.GetPortfolioName(portfolioId);
+            PositionDataVM positionVM = new PositionDataVM { PortfolioName= portfolioName, PositionObject = position };
+
+            return View(positionVM);
         }
 
-        public async Task<IActionResult> PortfolioBreakdown(int? id)
+        public IActionResult PortfolioBreakdown(int? id)
         {
             
             if (id == null)
@@ -71,26 +75,27 @@ namespace DataProjectCsharp.Controllers
                 return NotFound();
             }
             // eager loading
-            Portfolio portfolio = await _db.Portfolios
-                         .Where(p => p.PortfolioId == id && p.UserId == _userId)
-                         .Include(p => p.Trades)
-                         .FirstOrDefaultAsync();
-            if (portfolio == null)
+
+            bool portfolioCheck = _repo.UserPortfolioValidation(id, _userId);
+
+            if (!portfolioCheck)
             {
                 return NotFound();
             }
-            // will i need to load in all the trades(ordered by date and then ticker), create a position obj and then all the prices for the calcs?
-            // the add them all into a portfolio? and then the valuation for the portfolio..
-            // get a list of tradenames. create a position with it. for each name get all trades. add them to posiiton, then get security price and thus valuation, then add to portfolio object
 
-            //###################################################################
-            // builds the market valuation
+            List<Trade> allTrades = _repo.GetAllUserTrades(id, _userId);
+            string portfolioName = _repo.GetPortfolioName(id);
+            PortfolioData userPortfolio = _service.GetPortfolioData(portfolioName, allTrades);
+
+            DataFrame portfolioHPR = _service.GetPortfolioHPR(id, _userId); //rather than portfolio i might return this instead..
+
+
+            PortfolioDataVM portfolioVM = new PortfolioDataVM { PortfolioId = id, PortfolioObject = userPortfolio, HoldingPeriodReturn=portfolioHPR };
             // maybe make this an object that you put in a view model.
-            DataFrame portfolioHPR = _service.GetPortfolioHPR(id, _userId);
 
             // i might just have to pass in the portfolio object to the view... maybe i can use a viewmodel.
 
-            return View(portfolio);
+            return View(portfolioVM);
         }
 
         [HttpGet]

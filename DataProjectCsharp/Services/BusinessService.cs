@@ -18,18 +18,42 @@ namespace DataProjectCsharp.Services
             this._repo = repo;
         }
 
-        public DataFrame GetPositionPerformance(int? portfolioId, string userId, string symbol)
+        public PortfolioData GetPortfolioData(string portfolioName, List<Trade> allTrades)
+        {
+            List<string> distinctTickers = allTrades.Select(t => t.Ticker).Distinct().ToList();
+
+            PortfolioData userPortfolio = new PortfolioData(portfolioName);
+            foreach (string ticker in distinctTickers)
+            {
+                PositionFormulas position = new PositionFormulas(ticker);
+                foreach (Trade trade in allTrades)
+                {
+                    if (trade.Ticker == ticker)
+                    {
+                        position.AddTransaction(trade);
+                    }
+                }
+                List<SecurityPrices> marketPrices = _repo.GetSecurityPrices(ticker);
+                DataFrame marketPricesFrame = CreatePriceTable(marketPrices);
+
+                position.CalculateDailyValuation(marketPricesFrame);
+                userPortfolio.AddPositon(position);
+            }
+            return userPortfolio;
+        }
+
+        public PositionFormulas GetPositionData(int? portfolioId, string userId, string symbol)
         {
             
-            List<Trade> allTrades = _repo.GetTradesBySymbol(portfolioId, userId, symbol); 
-            if (allTrades.Count == 0)
+            List<Trade> allTradesBySymbol = _repo.GetTradesBySymbol(portfolioId, userId, symbol); 
+            if (allTradesBySymbol.Count == 0)
             {
                 return null;
             }
             
             // add the trades to the positon object.
             PositionFormulas position = new PositionFormulas(symbol);
-            foreach(Trade trade in allTrades)
+            foreach(Trade trade in allTradesBySymbol)
             {
                 position.AddTransaction(trade);
             }
@@ -41,9 +65,7 @@ namespace DataProjectCsharp.Services
             // #
 
             position.CalculateDailyPerformance(marketPricesFrame);
-            DataFrame performanceFrame = position.GetDailyPerformance();
-
-            return performanceFrame;
+            return position;
         }
 
         public DataFrame GetPortfolioHPR(int? portfolioId, string userId)
@@ -55,58 +77,14 @@ namespace DataProjectCsharp.Services
             {
                 return null;
             }
-            int otherlength = allTrades.Count;
-            PrimitiveDataFrameColumn<DateTime> flowDate = new PrimitiveDataFrameColumn<DateTime>("date", otherlength);
-            PrimitiveDataFrameColumn<decimal> cashCol = new PrimitiveDataFrameColumn<decimal>("cash", otherlength);
-            PrimitiveDataFrameColumn<decimal> inflowCol = new PrimitiveDataFrameColumn<decimal>("inflow", otherlength);
-            DataFrame flowFrame = new DataFrame(flowDate, cashCol, inflowCol);
-            int rowRef = 0;
-            decimal lastcashvalue = Decimal.Zero; // cumsum for cash column
-            foreach (Trade trade in allTrades)
-            {
-                decimal TradeAmount = trade.Quantity * trade.Price;
-                flowFrame[rowRef, 0] = trade.TradeDate;
-                if (TradeAmount > 0)
-                {
-                    //trade is a purchase, set inflow
-                    flowFrame[rowRef, 1] = lastcashvalue;
-                    flowFrame[rowRef, 2] = TradeAmount;
-                }
-                else
-                {
-                    //trade is a sell, set cash
-                    flowFrame[rowRef, 1] = Math.Abs(TradeAmount) + lastcashvalue;
-                    lastcashvalue = (decimal)flowFrame[rowRef, 1];
-                    flowFrame[rowRef, 2] = Decimal.Zero;
-                }
-                rowRef++;
-            }
-            GroupBy groupBy = flowFrame.GroupBy("date");
-            flowFrame = groupBy.Sum();
-            System.Diagnostics.Debug.WriteLine(flowFrame);
+            DataFrame flowFrame = CreateFlowTable(allTrades);
+
 
             //distinct tickers;
             List<string> distinctTickers = allTrades.Select(t=>t.Ticker).Distinct().ToList();
+            string portfolioName = _repo.GetPortfolioName(portfolioId);
+            PortfolioData userPortfolio = GetPortfolioData(portfolioName, allTrades);
 
-            PortfolioData userPortfolio = new PortfolioData();
-            foreach(string ticker in distinctTickers)
-            {
-                PositionFormulas position = new PositionFormulas(ticker);
-                foreach(Trade trade in allTrades)
-                {
-                    if (trade.Ticker == ticker)
-                    {
-                        position.AddTransaction(trade);
-                    }
-                }
-                // make the below a private method - build price table
-                List<SecurityPrices> marketPrices = _repo.GetSecurityPrices(ticker);
-                DataFrame marketPricesFrame = CreatePriceTable(marketPrices);
-
-                position.CalculateDailyValuation(marketPricesFrame);
-                userPortfolio.AddPositon(position);
-            }
-            System.Diagnostics.Debug.WriteLine(userPortfolio.GetValuation());
             //#######
             DataFrame portfolioValuation = userPortfolio.GetValuation();
             int pvSize = portfolioValuation.Rows.Count();
@@ -146,7 +124,6 @@ namespace DataProjectCsharp.Services
             //forwardfill cashcolumn then replace null with Decimal.Zero
             bool toFill = false;
             decimal prevCash = decimal.Zero;
-            System.Diagnostics.Debug.WriteLine(portfolioValuation);
             for (int row = 0; row < pvSize; row++)
             {
 
@@ -184,7 +161,7 @@ namespace DataProjectCsharp.Services
             for (int row = 1; row < pvSize; row++)
             {
                 int prevRow = row - 1;
-                portfolioValuation[row, hprIndex] = (((decimal)portfolioValuation[row, PortfolioValIndex]) / ((decimal)portfolioValuation[prevRow, PortfolioValIndex] + (decimal)portfolioValuation[prevRow, cashIndex]) - 1) * 100;
+                portfolioValuation[row, hprIndex] = (((decimal)portfolioValuation[row, PortfolioValIndex]) / ((decimal)portfolioValuation[prevRow, PortfolioValIndex] + (decimal)portfolioValuation[row, inflowIndex]) - 1) * 100;
             }
 
             System.Diagnostics.Debug.WriteLine(portfolioValuation);
@@ -199,6 +176,39 @@ namespace DataProjectCsharp.Services
             PrimitiveDataFrameColumn<decimal> priceCol = new PrimitiveDataFrameColumn<decimal>("price", prices);
             DataFrame marketPricesFrame = new DataFrame(dateCol, priceCol);
             return marketPricesFrame;
+        }
+
+        private DataFrame CreateFlowTable(List<Trade> allTrades)
+        {
+            int otherlength = allTrades.Count;
+            PrimitiveDataFrameColumn<DateTime> flowDate = new PrimitiveDataFrameColumn<DateTime>("date", otherlength);
+            PrimitiveDataFrameColumn<decimal> cashCol = new PrimitiveDataFrameColumn<decimal>("cash", otherlength);
+            PrimitiveDataFrameColumn<decimal> inflowCol = new PrimitiveDataFrameColumn<decimal>("inflow", otherlength);
+            DataFrame flowFrame = new DataFrame(flowDate, cashCol, inflowCol);
+            int rowRef = 0;
+            decimal lastcashvalue = Decimal.Zero; // cumsum for cash column
+            foreach (Trade trade in allTrades)
+            {
+                decimal TradeAmount = trade.Quantity * trade.Price;
+                flowFrame[rowRef, 0] = trade.TradeDate;
+                if (TradeAmount > 0)
+                {
+                    //trade is a purchase, set inflow
+                    flowFrame[rowRef, 1] = lastcashvalue;
+                    flowFrame[rowRef, 2] = TradeAmount;
+                }
+                else
+                {
+                    //trade is a sell, set cash
+                    flowFrame[rowRef, 1] = Math.Abs(TradeAmount) + lastcashvalue;
+                    lastcashvalue = (decimal)flowFrame[rowRef, 1];
+                    flowFrame[rowRef, 2] = Decimal.Zero;
+                }
+                rowRef++;
+            }
+            GroupBy groupBy = flowFrame.GroupBy("date");
+            flowFrame = groupBy.Sum();
+            return flowFrame;
         }
 
     }

@@ -1,0 +1,14 @@
+﻿using DataProjectCsharp.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace DataProjectCsharp.Models.DataViewModels
+{
+    public class PositionDataVM
+    {
+        public string PortfolioName { get; set; }
+        public PositionFormulas PositionObject { get; set; }
+    }
+}

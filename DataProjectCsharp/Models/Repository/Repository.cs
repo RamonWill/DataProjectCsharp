@@ -103,5 +103,18 @@ namespace DataProjectCsharp.Models.Repository
                     .OrderBy(t => t.TradeDate)
                     .ToList();
         }
+
+        public string GetPortfolioName(int? portfolioId)
+        {
+            return _db.Portfolios.Find(portfolioId).Name;
+        }
+
+        public bool UserPortfolioValidation(int? portfolioId, string userId)
+        {
+            Portfolio portfolio = _db.Portfolios
+                                     .Where(p => p.PortfolioId == portfolioId && p.UserId == userId)
+                                     .FirstOrDefault();
+            return (portfolio != null);
+        }
     }
 }

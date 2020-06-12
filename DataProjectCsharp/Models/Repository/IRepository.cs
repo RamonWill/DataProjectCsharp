@@ -10,8 +10,11 @@ namespace DataProjectCsharp.Models.Repository
         List<Portfolio> GetAllUserPortfolios(string userId);
         Portfolio GetUserPortfolio(int? portfolioId, string userId);
 
+        string GetPortfolioName(int? portfolioId);
         bool IsDuplicatePortfolio(string name, string userId);
         bool PortfoliosExists(string userId);
+
+        bool UserPortfolioValidation(int? portfolioId, string userId);
         void AddPortfolio(Portfolio portfolio);
         // void RemovePortfolio
         // void UpdatePortfolio

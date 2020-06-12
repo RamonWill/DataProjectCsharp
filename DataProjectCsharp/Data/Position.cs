@@ -44,8 +44,8 @@ namespace DataProjectCsharp.Data
         // this object is comprised of a list of transactions. I can update the position object with transactions. Position.AddTransaction(Transaction)
         // current limitation transactions will need to be added by the correct date order for this to work.
         public readonly string symbol;
-        private decimal averageCost { get; set; }
-        private long netQuantity { get; set; }
+        public decimal averageCost { get; set; }
+        public long netQuantity { get; set; }
         private bool isLong { get; set; }
 
         protected List<PositionSnapshot> positionBreakdown;
