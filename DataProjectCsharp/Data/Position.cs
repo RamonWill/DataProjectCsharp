@@ -49,7 +49,7 @@ namespace DataProjectCsharp.Data
         private bool isLong { get; set; }
 
         protected List<PositionSnapshot> positionBreakdown;
-        private Stack<OpenLots> openLots;
+        private Queue<OpenLots> openLots;
 
         public Position(string symbol)
         {
@@ -57,7 +57,7 @@ namespace DataProjectCsharp.Data
             this.averageCost = 0;
             this.netQuantity = 0;
             this.positionBreakdown = new List<PositionSnapshot>();
-            this.openLots = new Stack<OpenLots>();
+            this.openLots = new Queue<OpenLots>();
         }
 
 
@@ -87,7 +87,7 @@ namespace DataProjectCsharp.Data
                     if(Math.Abs(transaction.Quantity) >= Math.Abs(openLots.Peek().quantity))
                     {
                         transaction.Quantity += openLots.Peek().quantity;
-                        openLots.Pop();
+                        openLots.Dequeue();
                     }
                     else
                     {
@@ -103,7 +103,7 @@ namespace DataProjectCsharp.Data
             }
             if (transaction.Quantity != 0)
             {
-                openLots.Push(lot);
+                openLots.Enqueue(lot);
             }
 
             UpdatePosition(transaction);
