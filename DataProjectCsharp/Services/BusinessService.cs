@@ -161,7 +161,8 @@ namespace DataProjectCsharp.Services
             for (int row = 1; row < pvSize; row++)
             {
                 int prevRow = row - 1;
-                portfolioValuation[row, hprIndex] = (((decimal)portfolioValuation[row, PortfolioValIndex]) / ((decimal)portfolioValuation[prevRow, PortfolioValIndex] + (decimal)portfolioValuation[row, inflowIndex]) - 1) * 100;
+                decimal HPR = (((decimal)portfolioValuation[row, PortfolioValIndex]) / ((decimal)portfolioValuation[prevRow, PortfolioValIndex] + (decimal)portfolioValuation[row, inflowIndex]) - 1) * 100;
+                portfolioValuation[row, hprIndex] = Math.Round(HPR, 3);
             }
 
             System.Diagnostics.Debug.WriteLine(portfolioValuation);
