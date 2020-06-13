@@ -72,7 +72,9 @@ namespace DataProjectCsharp.Data
 
             // make sure a transaction cannot equal zero in my models
             // position has no trades
-            if(transaction.Quantity * netQuantity == 0)
+            // used to be (transaction.Quantity * netQuantity == 0) but if the net quantity is zero then this will always be true
+            // and i need to ignore trades where the transaction.quantity is zero;
+            if (netQuantity == 0)
             {
                 this.isLong = (transaction.Quantity >= 0);
             }
@@ -147,7 +149,26 @@ namespace DataProjectCsharp.Data
         private void AppendBreakdown(DateTime tradeDate)
         {
             PositionSnapshot snapshot = new PositionSnapshot(tradeDate, this.netQuantity, this.averageCost);
-            this.positionBreakdown.Add(snapshot);
+            // if theres no trades add this trade
+            if (positionBreakdown.Count == 0)
+            {
+                this.positionBreakdown.Add(snapshot);
+            }
+            else
+            {
+                //if theres a trade that took place on the same day then override it;
+                int lastIndex = this.positionBreakdown.Count - 1;
+                DateTime lastTradeDate = this.positionBreakdown[lastIndex].date;
+                if(tradeDate == lastTradeDate)
+                {
+                    this.positionBreakdown[lastIndex] = snapshot;
+                }
+                else
+                {
+                    this.positionBreakdown.Add(snapshot);
+                }
+            }
+            
         }
 
         private decimal GetAverageCost()
