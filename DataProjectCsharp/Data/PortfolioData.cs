@@ -12,7 +12,7 @@ namespace DataProjectCsharp.Data
         // order database by date and then ticker.
         // then create position objects to add to this portfolio
         // assumptions made. the first position that is added will determine the date range.
-        public string PortfolioName; 
+        public readonly string PortfolioName; 
         private List<Position> positions;
         private DataFrame PortfolioTable;
 
