@@ -3,18 +3,43 @@
     ViewData["Title"] = "PortfolioBreakdown";
 }
 @model DataProjectCsharp.Models.DataViewModels.PortfolioDataVM
-<h1>PortfolioBreakdown for @Model.PortfolioObject.PortfolioName</h1>
+<a class="text-primary" asp-area="" asp-controller="Portfolio" asp-action="Portfolios">Go Back to Your Portfolios</a>
+<h1>Portfolio: @Model.PortfolioObject.PortfolioName</h1>
 
-<h4>An overview of the trades and links to trade breakdowns which will be there own pages</h4>
+<h3 class="mb-2 text-muted">You have @Model.PortfolioObject.GetPositions().Where(p => p.netQuantity != 0).Count() open positions </h3>
 
 @if (@Model.PortfolioObject.GetPositions().Count != 0)
 {
-    foreach (var position in @Model.PortfolioObject.GetPositions())
-    {
-        <p>Quantity: @position.netQuantity Cost: @position.averageCost</p>
-        <a asp-action="PositionBreakdown" asp-route-PortfolioId="@Model.PortfolioId" asp-route-positionSymbol="@position.symbol" \>Breakdown for @position.symbol </a>
-    }
-
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <table class="table table-hover" style="width:100%" id="PositionTable">
+                    <thead>
+                        <tr>
+                            <th>All Positions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var position in @Model.PortfolioObject.GetPositions())
+                        {
+                            <tr>
+                                <td>
+                                    <span style="white-space:nowrap">
+                                        <a class="text-primary font-weight-bold" asp-action="PositionBreakdown" asp-route-PortfolioId="@Model.PortfolioId" asp-route-positionSymbol="@position.symbol" \>Breakdown for @position.symbol </a>
+                                    </span>
+                                    <span style="white-space:nowrap">Quantity: @position.netQuantity</span>
+                                    <span style="white-space:nowrap">Average Cost: @position.averageCost.ToString("0.##")</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-9">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+    </div>
     <div class="col-12">
         <table class="table table-striped table-bordered" style="width:100%" id="PortfolioHPR">
             <thead>
@@ -34,11 +59,21 @@
             </tbody>
         </table>
     </div>
-    <div class="line-chart-container">
-        <canvas id="myChart"></canvas>
-    </div>
 }
 @section scripts {
+    <script>
+        $(document).ready(function () {
+            $('#PositionTable').DataTable({
+                "pagingType": "simple",
+                "Info": false,
+                "lengthChange": false,
+                "pageLength": 3,
+                "order": [0, 'desc'],
+                "searching": true,
+                "columnDefs": [{ 'type': 'date-eu', 'targets': 0 }],
+            });
+        });
+    </script>
     <script>
         $(document).ready(function () {
 

@@ -10,7 +10,6 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>This is where my Form will go.</p>
                 <!--<div class="text-danger" asp-validation-summary="All"></div>-->
                 <form method="post" asp-action="AddPortfolio" asp-controller="Portfolio">
                     <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />

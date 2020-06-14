@@ -1,23 +1,21 @@
 ﻿@model DataProjectCsharp.Models.Portfolio
 
-
-
 <div class="modal fade" id="viewTrades">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class=" = modal-header">
-                <h5 class="modal-title" id="viewTradeLabel">Trades for portfolio @Model.Name</h5>
+                <h5 class="modal-title" id="viewTradeLabel">Trades for @Model.Name</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <div class="col-3 offset-3">
-                    <button type="button" class="btn btn-primary" data-toggle="ajax-modal-trade" data-target="#addTrade" data-url="@Url.Action("AddTrade", "Trade", new { id=Model.PortfolioId})">Add a new Trade</button>
-                </div>
-                <p>My DataTable will go here if the portfolio is not empty</p>
+
                 @if (@Model.Trades.FirstOrDefault() != null)
                 {
+                    <div class="col">
+                        <button type="button" class="btn btn-primary" data-toggle="ajax-modal-trade" data-target="#addTrade" data-url="@Url.Action("AddTrade", "Trade", new { id=Model.PortfolioId})">Add a new Trade</button>
+                    </div>
                     <div class="col-12">
                         <table class="table table-striped table-bordered" style="width:100%" id="TradesView">
                             <thead>
@@ -43,7 +41,7 @@
                                             <td>
                                                 <button type="button" class="btn btn-primary" data-toggle="ajax-modal-trade" data-target="#editTrade" data-url="@Url.Action("EditTrade", "Trade", new { id=trade.TradeId})">Edit</button>
                                                 <form method="post" asp-action="DeleteTrade" asp-controller="Trade" asp-route-id="@trade.TradeId">
-                                                    <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this trade?')" />
+                                                    <input class="btn btn-danger" type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this trade?')" />
                                                 </form>
                                             </td>
                                         </tr>
@@ -51,6 +49,13 @@
                                 }
                             </tbody>
                         </table>
+                    </div>
+                }
+                else
+                {
+                    <p>This Portfolio is currently empty.</p>
+                    <div class="col">
+                        <button type="button" class="btn btn-primary" data-toggle="ajax-modal-trade" data-target="#addTrade" data-url="@Url.Action("AddTrade", "Trade", new { id=Model.PortfolioId})">Add a new Trade</button>
                     </div>
                 }
             </div>
@@ -64,7 +69,10 @@
 <script src="~/js/Trademodals.js"></script>
 <script>
     $(document).ready(function () {
-        $('#TradesView').DataTable();
+        $('#TradesView').DataTable({
+            "lengthChange": false,
+            "pageLength": 4,
+        });
     });
 </script>
 

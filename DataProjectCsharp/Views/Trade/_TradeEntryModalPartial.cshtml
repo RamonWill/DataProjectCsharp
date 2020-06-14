@@ -11,11 +11,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>This is where my Form will go.</p>
                 <!--<div class="text-danger" asp-validation-summary="All"></div>-->
                 <form method="post" asp-action="AddTrade" asp-controller="Trade">
                     <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
                     <input asp-for="PortfolioId" type="hidden" value="@Model.PortfolioId" />
+                    <input asp-for="CreatedTimeStamp" type="hidden" value="@Model.CreatedTimeStamp" />
                     <div class="form-group row">
                         <div class="col-4">
                             <label asp-for="Ticker">Ticker</label>

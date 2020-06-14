@@ -2,11 +2,27 @@
 @*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
+<a class="text-primary" asp-action="PortfolioBreakdown" asp-route-id="@Model.PortfolioId">Got back to @Model.PortfolioName Breakdown</a>
 <h1>Portfolio: @Model.PortfolioName</h1>
-<h4>Breakdown for @Model.PositionObject.symbol</h4>
+<h4 class="text-muted">Performance breakdown for @Model.PositionObject.symbol</h4>
 
-<p>@Model.PositionObject.symbol:  @Model.PositionObject.netQuantity @Model.PositionObject.averageCost</p>
-
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <div class="card border-success mb-3">
+                <div class="card-header font-weight-bold">@Model.PositionObject.symbol Summary</div>
+                <div class="card-body text-success">
+                    <span class="card-text">Quantity: @Model.PositionObject.netQuantity</span>
+                    <br />
+                    <span class="card-text" >Average Cost: @Model.PositionObject.averageCost.ToString("#0.00")</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-9">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+</div>
 <!-- NOTE TO SELF: The positionData object needs to be able to work if multiple trades happen on the same date
     i.e. if trade date == the previous date in the breakdown then overide the last date in the breakdown with the current date.
     -->

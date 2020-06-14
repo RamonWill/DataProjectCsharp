@@ -3,30 +3,33 @@
     ViewData["Title"] = "Portfolios";
 }
 
-<h1>Portfolios</h1>
+<h1>Your Portfolios</h1>
 
 <!--Modal placeholder(makes the modal a part of the page's structure)-->
-
+<div id="modal-placeholder-available-securities"></div>
 <div id="modal-placeholder-trade-view"></div>
 <div id="modal-placeholder-portfolio"></div>
-<div class="col-3 offset-3">
-    <button type="button" class="btn btn-primary" data-toggle="ajax-modal-portfolio" data-target="#addPortfolio" data-url="@Url.Action("AddPortfolio")">Add a new Portfolio</button>
+<div class="col offset-0">
+    <button type="button" class="btn btn-outline-secondary" data-toggle="ajax-modal-portfolio" data-target="#addPortfolio" data-url="@Url.Action("AddPortfolio")" style="white-space:nowrap; margin-bottom:5px;">Add a new Portfolio</button>
+</div>
+<div class="col offset-0">
+    <button type="button" class="btn btn-outline-info" data-toggle="ajax-modal-view-available-securities" data-target="#ShowTradeableSecurities" data-url="@Url.Action("ShowTradeableSecurities")" style="white-space:nowrap; margin-bottom:5px;">View All Tradeable Securites</button>
 </div>
 @if (Model != null)
 {
     @foreach (Portfolio portfolio in Model)
     {
-        <p>@portfolio.Name</p>
-        <p>num of trades: @(portfolio.Trades == null ? 0 : portfolio.Trades.Count)</p>
-        <a asp-action="PortfolioBreakdown" asp-route-id="@portfolio.PortfolioId">Breakdown for @portfolio.Name</a>
-        <!--View trades. This allow the user to perform crud operations on trades via a modal. it will be a modal within a modal.
-            one modal for the table.. and another for the crud ops create, update or delete for TRADES!!!
-            i will also need to pass in the portfolio id through the URL action.
-            https://stackoverflow.com/questions/13017513/how-to-pass-parameter-from-url-action-to-controller-function
-            -->
-        <p>View Trades</p>
-        <div class="col-3">
-            <button type="button" class="btn btn-primary" data-toggle="ajax-modal-view-trades" data-target="#viewTrades" data-url="@Url.Action("ViewTrades", "Trade",new { id=portfolio.PortfolioId})">View Trades for @portfolio.Name</button>
+        <div class="card" style="margin-bottom:5px; background-color:#f7fdff">
+            <div class="card-body">
+                <h4 class="card-title">@portfolio.Name</h4>
+                <h6 class="card-subtitle mb-2 text-muted">Number of Trades: @(portfolio.Trades == null ? 0 : portfolio.Trades.Count)</h6>
+                <div class="btn-group" style="display:flex;">
+                    <a class="card-link" asp-action="PortfolioBreakdown" asp-route-id="@portfolio.PortfolioId">Breakdown for @portfolio.Name</a>
+                    <div class="col-3">
+                        <button type="button" class="btn btn-outline-primary" data-toggle="ajax-modal-view-trades" data-target="#viewTrades" data-url="@Url.Action("ViewTrades", "Trade",new { id=portfolio.PortfolioId})" style="white-space:nowrap">View Trades for @portfolio.Name</button>
+                    </div>
+                </div>
+            </div>
         </div>
     }
 }
