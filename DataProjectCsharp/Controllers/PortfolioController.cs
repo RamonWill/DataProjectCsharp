@@ -62,7 +62,7 @@ namespace DataProjectCsharp.Controllers
                 return NotFound();
             }
             string portfolioName = _repo.GetPortfolioName(portfolioId);
-            PositionDataVM positionVM = new PositionDataVM { PortfolioName= portfolioName, PositionObject = position };
+            PositionDataVM positionVM = new PositionDataVM { PortfolioId = portfolioId, PortfolioName = portfolioName, PositionObject = position };
 
             return View(positionVM);
         }
@@ -74,7 +74,6 @@ namespace DataProjectCsharp.Controllers
             {
                 return NotFound();
             }
-            // eager loading
 
             bool portfolioCheck = _repo.UserPortfolioValidation(id, _userId);
 
@@ -87,15 +86,21 @@ namespace DataProjectCsharp.Controllers
             string portfolioName = _repo.GetPortfolioName(id);
             PortfolioData userPortfolio = _service.GetPortfolioData(portfolioName, allTrades);
 
-            DataFrame portfolioHPR = _service.GetPortfolioHPR(id, _userId); //rather than portfolio i might return this instead..
+            DataFrame portfolioHPR = _service.GetPortfolioHPR(id, _userId); 
 
 
             PortfolioDataVM portfolioVM = new PortfolioDataVM { PortfolioId = id, PortfolioObject = userPortfolio, HoldingPeriodReturn=portfolioHPR };
-            // maybe make this an object that you put in a view model.
 
-            // i might just have to pass in the portfolio object to the view... maybe i can use a viewmodel.
 
             return View(portfolioVM);
+        }
+
+
+        [HttpGet]
+        public IActionResult ShowTradeableSecurities()
+        {
+            List<TradeableSecurities> allSecurities = _repo.GetTradeableSecurities();
+            return PartialView("_TradeableSecuritiesModalPartial", allSecurities);
         }
 
         [HttpGet]

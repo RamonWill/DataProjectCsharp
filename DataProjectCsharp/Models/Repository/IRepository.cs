@@ -33,5 +33,7 @@ namespace DataProjectCsharp.Models.Repository
         void AddSecurityPrice(SecurityPrices price);
 
         List<Trade> GetTradesBySymbol(int? portfolioId, string userId, string symbol);
+
+        List<TradeableSecurities> GetTradeableSecurities();
     }
 }

@@ -116,5 +116,11 @@ namespace DataProjectCsharp.Models.Repository
                                      .FirstOrDefault();
             return (portfolio != null);
         }
+
+        public List<TradeableSecurities> GetTradeableSecurities()
+        {
+            List<TradeableSecurities> availableSecurities = _db.TradeableSecurities.OrderBy(ts => ts.Name).ToList();
+            return availableSecurities;
+        }
     }
 }

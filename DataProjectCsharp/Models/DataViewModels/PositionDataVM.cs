@@ -8,6 +8,7 @@ namespace DataProjectCsharp.Models.DataViewModels
 {
     public class PositionDataVM
     {
+        public int? PortfolioId { get; set; }
         public string PortfolioName { get; set; }
         public PositionFormulas PositionObject { get; set; }
     }
