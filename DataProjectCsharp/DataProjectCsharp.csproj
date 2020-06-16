@@ -18,4 +18,8 @@
     <PackageReference Include="ServiceStack.Text" Version="5.8.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Screenshots\" />
+  </ItemGroup>
+
 </Project>
