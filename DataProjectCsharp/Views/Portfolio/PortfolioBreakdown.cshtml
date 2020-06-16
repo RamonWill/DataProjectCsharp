@@ -53,7 +53,7 @@
                 {
                     <tr>
                         <td>@row[0]</td>
-                        <td>@row[7]%</td>
+                        <td>@row[@Model.HoldingPeriodReturn.Columns.Count-1]%</td>
                     </tr>
                 }
             </tbody>
@@ -89,15 +89,18 @@
     <script>
         var dates = [];
         var performance = [];
-        @foreach(var row in Model.HoldingPeriodReturn.Rows)
+        @if (Model.HoldingPeriodReturn != null)
         {
-            if(@row[7] != null)
+          @foreach(var row in Model.HoldingPeriodReturn.Rows)
             {
-            @:dates.push("@row[0]");
-            @:performance.push("@row[7]");
+                if(@row[@Model.HoldingPeriodReturn.Columns.Count - 1] != null)
+                {
+                    @:dates.push("@row[0]");
+                    @:performance.push("@row[@Model.HoldingPeriodReturn.Columns.Count - 1]");
+                }
             }
-
         }
+
         var ctx = document.getElementById('myChart');
     var myChart = new Chart(ctx, {
         type: 'line',
