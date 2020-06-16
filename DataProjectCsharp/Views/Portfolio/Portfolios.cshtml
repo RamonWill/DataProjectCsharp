@@ -25,9 +25,12 @@
                 <h6 class="card-subtitle mb-2 text-muted">Number of Trades: @(portfolio.Trades == null ? 0 : portfolio.Trades.Count)</h6>
                 <div class="btn-group" style="display:flex;">
                     <a class="card-link" asp-action="PortfolioBreakdown" asp-route-id="@portfolio.PortfolioId">Breakdown for @portfolio.Name</a>
-                    <div class="col-3">
-                        <button type="button" class="btn btn-outline-primary" data-toggle="ajax-modal-view-trades" data-target="#viewTrades" data-url="@Url.Action("ViewTrades", "Trade",new { id=portfolio.PortfolioId})" style="white-space:nowrap">View Trades for @portfolio.Name</button>
+                    <div class="">
+                        <button type="button" class="btn btn-outline-primary" data-toggle="ajax-modal-view-trades" data-target="#viewTrades" data-url="@Url.Action("ViewTrades", "Trade",new { id=portfolio.PortfolioId})" style="white-space:nowrap;margin-left:15px; margin-right:50px;">View Trades for @portfolio.Name</button>
                     </div>
+                    <form method="post" asp-action="DeletePortfolio" asp-controller="Portfolio" asp-route-id="@portfolio.PortfolioId">
+                        <input class="btn btn-outline-danger" type="submit" value="Delete"  onclick="return confirm('Are you sure you want to delete this Portfolio?')"  />
+                    </form>
                 </div>
             </div>
         </div>
