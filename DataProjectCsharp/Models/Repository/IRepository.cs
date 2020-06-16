@@ -16,8 +16,9 @@ namespace DataProjectCsharp.Models.Repository
 
         bool UserPortfolioValidation(int? portfolioId, string userId);
         void AddPortfolio(Portfolio portfolio);
+
+        void RemovePortfolio(Portfolio portfolio);
         // void RemovePortfolio
-        // void UpdatePortfolio
 
 
         List<Trade> GetAllUserTrades(int? portfolioId, string userId);
@@ -30,6 +31,7 @@ namespace DataProjectCsharp.Models.Repository
 
         List<SecurityPrices> GetSecurityPrices(string symbol);
         bool IsSecurityStored(string symbol);
+        bool isValidTicker(string symbol);
         void AddSecurityPrice(SecurityPrices price);
 
         List<Trade> GetTradesBySymbol(int? portfolioId, string userId, string symbol);

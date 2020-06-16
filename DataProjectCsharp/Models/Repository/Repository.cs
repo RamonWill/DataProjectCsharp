@@ -122,5 +122,15 @@ namespace DataProjectCsharp.Models.Repository
             List<TradeableSecurities> availableSecurities = _db.TradeableSecurities.OrderBy(ts => ts.Name).ToList();
             return availableSecurities;
         }
+
+        public void RemovePortfolio(Portfolio portfolio)
+        {
+            _db.Portfolios.Remove(portfolio);
+        }
+
+        public bool isValidTicker(string symbol)
+        {
+            return (_db.TradeableSecurities.FirstOrDefault(p => p.Ticker == symbol) != null);
+        }
     }
 }

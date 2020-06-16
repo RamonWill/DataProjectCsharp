@@ -21,17 +21,15 @@ namespace DataProjectCsharp.Controllers
     [Authorize]
     public class PortfolioController : Controller
     {
-        private readonly ApplicationDbContext _db;
         private readonly UserManager<User> _userManager;
         private readonly string _userId;
         private readonly IRepository _repo;
         private IBusinessService _service;
-        public PortfolioController(IRepository repo, ApplicationDbContext db, UserManager<User> userManager, 
+        public PortfolioController(IRepository repo, UserManager<User> userManager, 
                             IHttpContextAccessor httpContextAccessor)
         {
             this._service = new BusinessService(repo);
             this._repo = repo;
-            this._db = db;
             this._userManager = userManager;
             this._userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
@@ -132,6 +130,28 @@ namespace DataProjectCsharp.Controllers
                 ModelState.AddModelError("Name", "You can't have two portfolios with the same name.");
                 return PartialView("_PortfolioModalPartial", portfolio);
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePortfolio(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Portfolio portfolio = _repo.GetUserPortfolio(id, _userId);
+            if (portfolio == null)
+            {
+                return NotFound();
+            }
+
+
+            _repo.RemovePortfolio(portfolio);
+            await _repo.SaveChangesAsync();
+
+            return RedirectToAction("Portfolios", "Portfolio");
         }
 
     }
