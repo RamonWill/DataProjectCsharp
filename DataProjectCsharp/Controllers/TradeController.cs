@@ -75,6 +75,15 @@ namespace DataProjectCsharp.Controllers
                 return PartialView("_TradeEntryModalPartial", trade);
             }
             trade.UserId = _userId;
+
+            // check if trade ticker is valid..
+            bool validTicker = _repo.isValidTicker(trade.Ticker);
+            if (!validTicker)
+            {
+                ModelState.AddModelError("Ticker", $"{trade.Ticker} is not a tradeable instrument");
+                return PartialView("_TradeEntryModalPartial", trade);
+            }
+
             _repo.AddTrade(trade);
             await _repo.SaveChangesAsync();
 

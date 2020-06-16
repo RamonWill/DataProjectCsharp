@@ -12,16 +12,13 @@ using DataProjectCsharp.Data;
 
 namespace DataProjectCsharp.Controllers
 {
-    //[Authorize] < redirects user to login page if they are not authorised.
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly AlphaVantageConnection _AVConn;
         public HomeController(ILogger<HomeController> logger, AlphaVantageConnection AVConn)
         {
             _logger = logger;
-            _AVConn = AVConn;
-
         }
 
         public IActionResult Index()
