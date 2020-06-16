@@ -81,7 +81,6 @@ namespace DataProjectCsharp.Services
 
 
             //distinct tickers;
-            List<string> distinctTickers = allTrades.Select(t=>t.Ticker).Distinct().ToList();
             string portfolioName = _repo.GetPortfolioName(portfolioId);
             PortfolioData userPortfolio = GetPortfolioData(portfolioName, allTrades);
 

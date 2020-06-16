@@ -8,10 +8,12 @@ namespace DataProjectCsharp.Data
 {
     public class PortfolioData
     {
-        // A portfolio is a collection of position objects
-        // order database by date and then ticker.
-        // then create position objects to add to this portfolio
-        // assumptions made. the first position that is added will determine the date range.
+        /*
+         * A portfolio is a collection of position objects
+         * A big assumption made is that the first position that is added will determine the portfolios date range
+         * Therefore for portfolios with multiple securities it is best to load positions in ascending order
+         */
+
         public readonly string PortfolioName; 
         private List<Position> positions;
         private DataFrame PortfolioTable;
@@ -31,17 +33,20 @@ namespace DataProjectCsharp.Data
         public void AddPositon(PositionFormulas position)
         {
             // adds the position to the position list.
-            // append the position.GetDailyPerformance to the PortfolioTable initially.
-            // then every table appended after that is added on.
+            // adds the positon to the list of positions.
             this.positions.Add(position);
+
+            // append the position.GetDailyValuation to the PortfolioTable initially.
+            // then every table appended after that is added on.
             DataFrame positionValuation = position.GetDailyValuation();
-            // fail if there is not daily valuation
-            if (PortfolioTable.Columns.Count == 0)
+
+            if (this.PortfolioTable.Columns.Count == 0)
             {
-                this.PortfolioTable = positionValuation;
+                this.PortfolioTable = positionValuation.Clone();
             }
             else
             {
+                // If the portfolio already contains securities then add a new column
                 int numberOfRows = this.PortfolioTable.Rows.Count();
                 string NewColName = $"{position.symbol}_MarketValue";
                 PrimitiveDataFrameColumn<decimal> newCol = new PrimitiveDataFrameColumn<decimal>(NewColName, numberOfRows);
@@ -49,11 +54,18 @@ namespace DataProjectCsharp.Data
 
                 int dateCol = 0;
                 int secondaryRow = 0;
+
                 int newColIndex = PortfolioTable.Columns.Count-1;
                 for(int row = 0; row < numberOfRows; row++)
                 {
+                    if (secondaryRow==positionValuation.Rows.Count)
+                    {
+                        break;
+                    }
+
                     if(this.PortfolioTable[row, dateCol].Equals(positionValuation[secondaryRow, dateCol]))
                     {
+                        // if the dates between the tables match then assign the positions valuation at that date to the Portfolios Table
                         this.PortfolioTable[row, newColIndex] = positionValuation[secondaryRow, 1];
                         secondaryRow++;
                     }
@@ -65,11 +77,6 @@ namespace DataProjectCsharp.Data
             }
         }
 
-        /*
-         * to get the valuation i will need the sum of each row.
-         * i can have a function that checks if the last coloumn is called total. if it is delete and replace, otherwise just add it.
-         * I would iterate through each row and do nested for loop.
-        */ 
         public DataFrame GetValuation()
         {
             if (this.PortfolioTable.Columns.Count < 2)
@@ -88,10 +95,15 @@ namespace DataProjectCsharp.Data
             for (int row=0; row < numberOfRows; row++)
             {
                 decimal total = 0;
-                //for each column that isnt a date and isnt the total
+                //for each column that isnt a date and isnt the total get the sum.
                 for (int col = 1; col <= lastColumnIndex; col++)
                 {
-                    total += (decimal)ResultTable[row, col];
+                    decimal? value = (decimal?)ResultTable[row, col];
+                    if (value != null)
+                    {
+                        total += (decimal)value;
+                    }
+                    
                 }
                 ResultTable[row, marketValCol] = Math.Round(total,2);
             }

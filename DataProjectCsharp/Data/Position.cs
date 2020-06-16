@@ -33,7 +33,7 @@ namespace DataProjectCsharp.Data
             this.price = price;
         }
 
-        public decimal GetMarketValue()
+        public decimal GetTradeValue()
         {
             return this.quantity * this.price;
         }
@@ -121,7 +121,7 @@ namespace DataProjectCsharp.Data
             {
                 foreach (OpenLots lot in this.openLots)
                 {
-                    result += lot.GetMarketValue();
+                    result += lot.GetTradeValue();
                 }
             }
             return result;
