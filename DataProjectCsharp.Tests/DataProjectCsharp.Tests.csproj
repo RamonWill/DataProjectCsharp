@@ -22,4 +22,10 @@
     <Folder Include="ServicesTesting\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="appsettingsTest.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
