@@ -27,7 +27,7 @@ namespace DataProjectCsharp.Tests.DataObjectsTesting
         public void TestTwoLongTrades()
         {
             // The user executes 2 buy trades
-            Positionformulas position = new Positionformulas(testSymbol);
+            Position position = new Position(testSymbol);
             Trade tradeA = CreateTransaction(500, testSymbol, 12.5m, new DateTime (2020, 5, 4));
             Trade tradeB = CreateTransaction(300, testSymbol, 17.6m, new DateTime(2020, 5, 5));
             position.AddTransaction(tradeA);
@@ -48,7 +48,7 @@ namespace DataProjectCsharp.Tests.DataObjectsTesting
         public void TestTwoShortTradesSameDay()
         {
             // the user executes 2 sell trades on the same day
-            Positionformulas position = new Positionformulas(testSymbol);
+            Position position = new Position(testSymbol);
             Trade tradeA = CreateTransaction(-450, testSymbol, 15.1m, new DateTime(2020, 5, 4));
             Trade tradeB = CreateTransaction(-157, testSymbol, 10.22m, new DateTime(2020, 5, 4));
             position.AddTransaction(tradeA);
@@ -68,7 +68,7 @@ namespace DataProjectCsharp.Tests.DataObjectsTesting
         public void TestOneLongTradeThenShort()
         {
             // the user executes a buy trade and then a sell trade
-            Positionformulas position = new Positionformulas(testSymbol);
+            Position position = new Position(testSymbol);
             Trade tradeA = CreateTransaction(300, testSymbol, 15m, new DateTime(2020, 5, 4));
             Trade tradeB = CreateTransaction(-200, testSymbol, 5.5m, new DateTime(2020, 5, 5));
             position.AddTransaction(tradeA);
@@ -89,7 +89,7 @@ namespace DataProjectCsharp.Tests.DataObjectsTesting
         public void TestOneShortTradeThenLong()
         {
             // the user executes a sell trade and then a buy trade
-            Positionformulas position = new Positionformulas(testSymbol);
+            Position position = new Position(testSymbol);
             Trade tradeA = CreateTransaction(-300, testSymbol, 15m, new DateTime(2020, 5, 4));
             Trade tradeB = CreateTransaction(100, testSymbol, 10m, new DateTime(2020, 5, 5));
             position.AddTransaction(tradeA);
@@ -110,7 +110,7 @@ namespace DataProjectCsharp.Tests.DataObjectsTesting
         public void TestTradeToFlattenPosition()
         {
             // the user executes a buy trade then a sell trade to flatten the position
-            Positionformulas position = new Positionformulas(testSymbol);
+            Position position = new Position(testSymbol);
             Trade tradeA = CreateTransaction(300, testSymbol, 25m, new DateTime(2020, 5, 4));
             Trade tradeB = CreateTransaction(-300, testSymbol, 10m, new DateTime(2020, 5, 5));
             position.AddTransaction(tradeA);
@@ -134,7 +134,7 @@ namespace DataProjectCsharp.Tests.DataObjectsTesting
              * the user then executes a sell trade to make the overall position negative.
              * the user then executes another buy trade to make the overall position positive
             */
-            Positionformulas position = new Positionformulas(testSymbol);
+            Position position = new Position(testSymbol);
             Trade tradeA = CreateTransaction(300, testSymbol, 25m, new DateTime(2020, 5, 4));
             Trade tradeB = CreateTransaction(-500, testSymbol, 10m, new DateTime(2020, 5, 5));
             Trade tradeC = CreateTransaction(600, testSymbol, 15m, new DateTime(2020, 5, 6));
@@ -158,7 +158,7 @@ namespace DataProjectCsharp.Tests.DataObjectsTesting
         public void TestMismatchedTradeSymbol()
         {
             // if for some reason code is written that tries to add a trade from a different security into a position it should throw an exception
-            Positionformulas position = new Positionformulas(testSymbol);
+            Position position = new Position(testSymbol);
             Trade tradeA = CreateTransaction(300, "AAPL", 25m, new DateTime(2020, 5, 4));
             Assert.Throws<InvalidOperationException>(()=>position.AddTransaction(tradeA));
         }
