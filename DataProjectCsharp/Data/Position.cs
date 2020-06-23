@@ -188,7 +188,7 @@ namespace DataProjectCsharp.Data
         {
             if (this.netQuantity == 0)
             {
-                return 0;
+                return Decimal.Zero;
             }
             decimal marketValue = GetTotalMarketValue();
 
