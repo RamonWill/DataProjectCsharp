@@ -19,6 +19,19 @@ namespace DataProjectCsharp.Data
             this.quantity = quantity;
             this.averageCost = averageCost;
         }
+
+        public override bool Equals(object other)
+        {
+            PositionSnapshot otherSnapshot = other as PositionSnapshot;
+            if (otherSnapshot == null)
+            {
+                return false;
+            }
+
+            return (this.date == otherSnapshot.date &&
+                    this.averageCost == otherSnapshot.averageCost &&
+                    this.quantity == otherSnapshot.quantity);
+        }
     }
 
     public class OpenLots
@@ -173,6 +186,10 @@ namespace DataProjectCsharp.Data
 
         private decimal GetAverageCost()
         {
+            if (this.netQuantity == 0)
+            {
+                return 0;
+            }
             decimal marketValue = GetTotalMarketValue();
 
             return marketValue/this.netQuantity;
