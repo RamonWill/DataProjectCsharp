@@ -33,6 +33,7 @@ namespace DataProjectCsharp
                 options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddTransient<IRepository, Repository>();
+            services.AddTransient<IAdminRepository, AdminRepository>();
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
