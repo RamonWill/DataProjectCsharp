@@ -10,8 +10,14 @@
     <ul class="navbar-nav">
         @if (SignInManager.IsSignedIn(User))
         {
+            @if (User.IsInRole("Administrator"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link text-success font-weight-bold" asp-controller="Admin" asp-action="AdminPanel" >Admin Panel</a>
+                </li>
+            }
             <li class="nav-item">
-                <a class="nav-link text-dark font-weight-bold" asp-controller="Home" asp-action="Index" title="Welcome">@User.Identity.Name</a>
+                <a class="nav-link text-dark font-weight-bold" asp-controller="Home" asp-action="Index">@User.Identity.Name</a>
             </li>
             <li class="nav-item">
                 <form class="form-inline" asp-controller="Account" asp-action="Logout">
@@ -19,14 +25,14 @@
                 </form>
             </li>
         }
-        else 
-        { 
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Account" asp-action="Registration">Register</a>
-        </li>
+        else
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="Account" asp-action="Registration">Register</a>
+            </li>
         }
     </ul>
 
