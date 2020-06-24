@@ -11,7 +11,7 @@
         @if (SignInManager.IsSignedIn(User))
         {
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="Home" asp-action="Index" title="Welcome">@User.Identity.Name</a>
+                <a class="nav-link text-dark font-weight-bold" asp-controller="Home" asp-action="Index" title="Welcome">@User.Identity.Name</a>
             </li>
             <li class="nav-item">
                 <form class="form-inline" asp-controller="Account" asp-action="Logout">

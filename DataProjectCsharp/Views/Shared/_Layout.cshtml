@@ -9,24 +9,24 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#f7fbff">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">DataProjectCsharp</a>
+                <a class="navbar-brand" style="color:#0054d9;font-weight:600" asp-area="" asp-controller="Home" asp-action="Index">DataProjectCsharp</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_AccountPartial" />
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1" style="font-weight:500;">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" style="color:#0054d9" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Portfolio" asp-action="Portfolios">Portfolio</a>
+                            <a class="nav-link" style="color:#0054d9" asp-area="" asp-controller="Portfolio" asp-action="Portfolios">Portfolio</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" style="color:#0054d9" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a>
                         </li>
                     </ul>
                 </div>
@@ -39,9 +39,9 @@
         </main>
     </div>
 
-    <footer class="border-top footer bg-white text-muted">
+    <footer class="border-top footer text-muted" style="background-color:#f7fbff">
         <div class="container">
-            &copy; 2020 - DataProjectCsharp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2020 - DataProjectCsharp - <a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
