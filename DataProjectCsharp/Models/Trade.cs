@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataProjectCsharp.Models
 {
-    public class Trade
+    public class Trade: IValidatableObject
     {
         [Key]
         public int TradeId { get; set; }
@@ -38,6 +38,19 @@ namespace DataProjectCsharp.Models
         {
             TradeDate = DateTime.UtcNow;
             CreatedTimeStamp = DateTime.UtcNow;
+        }
+
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        {
+            if(TradeDate < CreatedTimeStamp.AddDays(-99))
+            {
+                // the reason for this is that with my current setup i can only get the last 100 prices from AlphaVantage
+                yield return new ValidationResult("The Trade Date cannot be 100 days less that the date the trade was created.");
+            }
+            if(TradeDate >= DateTime.UtcNow.AddDays(1))
+            {
+                yield return new ValidationResult("The Trade Date cannot be a date in the future.");
+            }
         }
     }
 }
