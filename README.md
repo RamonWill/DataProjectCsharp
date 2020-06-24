@@ -6,7 +6,7 @@ A Web Application that allows users to create dummy equity portfolios to monitor
 * Back-End: ASP.Net Core(C#), Entity Framework, MSSQL
 * Other Libraries: Microsoft.Data.Analysis (For analytics)
 
-<img src="DataProjectCsharp/Screenshots/HomePage.PNG" width="500">
+<img src="DataProjectCsharp/Screenshots/HomePage.PNG" width="700">
 
 # Table of Contents
 - [Introduction](https://github.com/RamonWill/Data-App#Introduction)
@@ -40,5 +40,5 @@ Coming Soon
 
 # Screenshots
 
-<img src="DataProjectCsharp/Screenshots/PortfolioBreakdownPage.PNG" width="500">
-<img src="DataProjectCsharp/Screenshots/PositionBreakdownPage.PNG" width="500">
+<img src="DataProjectCsharp/Screenshots/PortfolioBreakdownPage.PNG" width="700">
+<img src="DataProjectCsharp/Screenshots/PositionBreakdownPage.PNG" width="700">
