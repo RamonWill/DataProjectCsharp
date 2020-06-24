@@ -18,7 +18,6 @@ namespace DataProjectCsharp.Models.Repository
         void AddPortfolio(Portfolio portfolio);
 
         void RemovePortfolio(Portfolio portfolio);
-        // void RemovePortfolio
 
 
         List<Trade> GetAllUserTrades(int? portfolioId, string userId);
