@@ -14,7 +14,6 @@ namespace DataProjectCsharp.Models.Repository
         public Repository(ApplicationDbContext db)
         {
             this._db = db;
-            
         }
 
         public bool PortfoliosExists(string userId)

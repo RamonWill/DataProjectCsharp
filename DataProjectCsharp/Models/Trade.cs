@@ -51,6 +51,7 @@ namespace DataProjectCsharp.Models
             {
                 yield return new ValidationResult("The Trade Date cannot be a date in the future.");
             }
+            // Add another check that the Trade date itself cannot be a weekend
         }
     }
 }
