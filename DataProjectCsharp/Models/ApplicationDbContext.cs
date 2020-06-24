@@ -19,11 +19,13 @@ namespace DataProjectCsharp.Models
         {
             
             base.OnModelCreating(builder);
-            /*
+            
             builder.ApplyConfiguration(new RoleConfigurations());
             builder.ApplyConfiguration(new TradeConfigurations());
             builder.ApplyConfiguration(new PortfolioConfigurations());
-            */
+            
+            builder.ApplyConfiguration(new AdminConfiguration());
+            builder.ApplyConfiguration(new UsersWithRolesConfig());
             
         }
         public DbSet<Portfolio> Portfolios { get; set; }

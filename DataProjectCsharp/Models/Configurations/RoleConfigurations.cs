@@ -10,6 +10,7 @@ namespace DataProjectCsharp.Models.Configurations
 {
     public class RoleConfigurations:IEntityTypeConfiguration<IdentityRole>
     {
+        private const string adminRoleId = "9f581206-6046-4cc0-92ac-86313c875f50";
         /*Manually create roles for the DataBase
          * a dummy user and an admin user.
          */
@@ -23,6 +24,7 @@ namespace DataProjectCsharp.Models.Configurations
              },
              new IdentityRole
              {
+                 Id = adminRoleId,
                  Name = "Administrator",
                  NormalizedName = "ADMIN"
              });
