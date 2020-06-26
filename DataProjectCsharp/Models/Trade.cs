@@ -45,13 +45,17 @@ namespace DataProjectCsharp.Models
             if(TradeDate < CreatedTimeStamp.AddDays(-99))
             {
                 // the reason for this is that with my current setup i can only get the last 100 prices from AlphaVantage
-                yield return new ValidationResult("The Trade Date cannot be 100 days less that the date the trade was created.");
+                yield return new ValidationResult("The Trade Date cannot be 100 days older that the date the trade was created.");
             }
             if(TradeDate >= DateTime.UtcNow.AddDays(1))
             {
                 yield return new ValidationResult("The Trade Date cannot be a date in the future.");
             }
             // Add another check that the Trade date itself cannot be a weekend
+            if(TradeDate.DayOfWeek==DayOfWeek.Saturday|| TradeDate.DayOfWeek== DayOfWeek.Sunday)
+            {
+                yield return new ValidationResult("The Trade Date cannot fall on a weekend.");
+            }
         }
     }
 }
