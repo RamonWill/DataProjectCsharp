@@ -7,7 +7,7 @@ namespace DataProjectCsharp.Models.Repository
 {
     public interface IAdminRepository
     {
-        DateTime GetMostRecentPrice(string symbol);
+        HashSet<DateTime> GetPriceDates(string symbol);
 
         // we only price open positions
         List<string> GetOpenTradeTickers();

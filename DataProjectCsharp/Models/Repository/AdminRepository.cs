@@ -19,11 +19,10 @@ namespace DataProjectCsharp.Models.Repository
             _db.SecurityPrices.Add(price);
         }
 
-        public DateTime GetMostRecentPrice(string symbol)
+        public HashSet<DateTime> GetPriceDates(string symbol)
         {
-            SecurityPrices mostRecentPrice = _db.SecurityPrices.OrderByDescending(sp => sp.date).First();
-            DateTime mostRecentDate = mostRecentPrice.date;
-            return mostRecentDate;
+            HashSet<DateTime> pricedDates = _db.SecurityPrices.Where(sp=>sp.ticker==symbol).Select(sp=>sp.date).ToHashSet();
+            return pricedDates;
         }
 
         public List<string> GetOpenTradeTickers()
