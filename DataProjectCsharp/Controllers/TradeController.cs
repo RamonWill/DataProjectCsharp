@@ -91,7 +91,7 @@ namespace DataProjectCsharp.Controllers
             bool isSecurityStored = _repo.IsSecurityStored(trade.Ticker);
             if (!isSecurityStored)
             {
-                // Later on create logic that stores the security price
+                // Later on create logic that stores the security price AND MAKE THIS ASYNC so THE SCREEN DOESNT FREEZE
                 List<AlphaVantageSecurityData> prices = _avConn.GetDailyPrices(trade.Ticker);
                 
                 foreach(AlphaVantageSecurityData price in prices)
