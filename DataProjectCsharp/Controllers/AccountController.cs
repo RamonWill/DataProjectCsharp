@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using DataProjectCsharp.Models;
+using DataProjectCsharp.Services.Email;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +17,14 @@ namespace DataProjectCsharp.Controllers
         //this is an authentication manager.
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        private readonly IEmailMessenger _emailMessenger;
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IEmailMessenger emailMessenger)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
+            this._emailMessenger = emailMessenger;
         }
+
         [HttpGet]
         public IActionResult Registration()
         {
@@ -95,6 +99,80 @@ namespace DataProjectCsharp.Controllers
                 return View();
             }           
         }
+
+        [HttpGet]
+        public IActionResult ForgottenPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgottenPassword(ForgottenPasswordModel forgottenPassword)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(forgottenPassword);
+            }
+            User user = await _userManager.FindByEmailAsync(forgottenPassword.Email);
+            if (user == null)
+            {
+                return RedirectToAction(nameof(ForgottenPasswordConfirm));
+            }
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var callback = Url.Action(nameof(ResetPassword), "Account", new { token, email = user.Email }, Request.Scheme);
+            string contentBody = $"Hi {user.UserName},\nYou've asked to reset your password for the CSharpDataProject. Please click the link below\n<a>{callback}</a>"; 
+            var message = new Message(new string[] { user.Email }, "Your Password Reset token", contentBody);
+            await _emailMessenger.SendEmailAsync(message);
+
+            return RedirectToAction(nameof(ForgottenPasswordConfirm));
+
+        }
+
+        public IActionResult ForgottenPasswordConfirm()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            var model = new ResetPasswordModel { Token = token, Email = email };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordModel resetPassword)
+        {
+            if (!ModelState.IsValid)
+                return View(resetPassword);
+
+            var user = await _userManager.FindByEmailAsync(resetPassword.Email);
+            if (user == null)
+                RedirectToAction(nameof(ResetPasswordConfirm));
+
+            var resetPassResult = await _userManager.ResetPasswordAsync(user, resetPassword.Token, resetPassword.Password);
+            if (!resetPassResult.Succeeded)
+            {
+                foreach (var error in resetPassResult.Errors)
+                {
+                    ModelState.TryAddModelError(error.Code, error.Description);
+                }
+
+                return View();
+            }
+
+            return RedirectToAction(nameof(ResetPasswordConfirm));
+        }
+
+        [HttpGet]
+        public IActionResult ResetPasswordConfirm()
+        {
+            return View();
+        }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

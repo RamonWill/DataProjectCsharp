@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DataProjectCsharp.Data;
 using DataProjectCsharp.Models;
 using DataProjectCsharp.Models.Repository;
+using DataProjectCsharp.Services.Email;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -36,7 +37,9 @@ namespace DataProjectCsharp
             services.AddTransient<IAdminRepository, AdminRepository>();
 
             services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
             services.Configure<IdentityOptions>(options => 
             {
                 // Password settings.
@@ -55,11 +58,20 @@ namespace DataProjectCsharp
                 options.User.RequireUniqueEmail = true;
                 
             });
+
+            services.Configure<DataProtectionTokenProviderOptions>(opt =>
+                opt.TokenLifespan = TimeSpan.FromHours(24));
+
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             // Here I inject my AVConnection
             AlphaVantageConnection AVConn = new AlphaVantageConnection(Configuration);
             services.AddSingleton<AlphaVantageConnection>(AVConn);
 
+            var emailConfig = Configuration
+                .GetSection("EmailConfiguration")
+                .Get<EmailConfiguration>();
+            services.AddSingleton(emailConfig);
+            services.AddScoped<IEmailMessenger, EmailMessenger>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

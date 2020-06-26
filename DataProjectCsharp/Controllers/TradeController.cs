@@ -87,7 +87,6 @@ namespace DataProjectCsharp.Controllers
             _repo.AddTrade(trade);
             await _repo.SaveChangesAsync();
 
-            // test adding prices to DB
             bool isSecurityStored = _repo.IsSecurityStored(trade.Ticker);
             if (!isSecurityStored)
             {
@@ -140,9 +139,9 @@ namespace DataProjectCsharp.Controllers
             return PartialView("_TradeEditModalPartial", trade);
         }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteTrade(int? id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteTrade(int? id)
         {
             if (id == null)
             {
