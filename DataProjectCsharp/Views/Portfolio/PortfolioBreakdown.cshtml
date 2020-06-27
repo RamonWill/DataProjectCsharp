@@ -6,7 +6,7 @@
 <a class="text-primary" asp-area="" asp-controller="Portfolio" asp-action="Portfolios">Go Back to Your Portfolios</a>
 <h1 style="color:#002699">Portfolio: @Model.PortfolioObject.PortfolioName</h1>
 
-<h3 class="mb-2 text-muted">You have <span style="color:#389afc">@Model.PortfolioObject.GetPositions().Where(p => p.netQuantity != 0).Count()</span> open positions </h3>
+<h3 class="mb-2 text-muted">You have <span style="color:#389afc">@Model.PortfolioObject.GetPositions().Where(p => p.NetQuantity != 0).Count()</span> open positions </h3>
 
 @if (@Model.PortfolioObject.GetPositions().Count != 0)
 {
@@ -27,8 +27,8 @@
                                     <span style="white-space:nowrap">
                                         <a class="font-weight-bold" asp-action="PositionBreakdown" asp-route-PortfolioId="@Model.PortfolioId" asp-route-positionSymbol="@position.symbol" \>Breakdown for @position.symbol </a>
                                     </span>
-                                    <span style="white-space:nowrap;color:#389afc"><span style="font-weight:600">Quantity: </span>@position.netQuantity</span>
-                                    <span style="white-space:nowrap;color:#389afc"><span style="font-weight:600">Average Cost: </span>@position.averageCost.ToString("0.##")</span>
+                                    <span style="white-space:nowrap;color:#389afc"><span style="font-weight:600">Quantity: </span>@position.NetQuantity</span>
+                                    <span style="white-space:nowrap;color:#389afc"><span style="font-weight:600">Average Cost: </span>@position.AverageCost.ToString("0.##")</span>
                                 </td>
                             </tr>
                         }
