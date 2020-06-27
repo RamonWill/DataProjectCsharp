@@ -21,16 +21,14 @@ namespace DataProjectCsharp.Controllers
     [Authorize]
     public class PortfolioController : Controller
     {
-        private readonly UserManager<User> _userManager;
+        
         private readonly string _userId;
         private readonly IRepository _repo;
-        private IBusinessService _service;
-        public PortfolioController(IRepository repo, UserManager<User> userManager, 
-                            IHttpContextAccessor httpContextAccessor)
+        private readonly IBusinessService _service;
+        public PortfolioController(IRepository repo, IHttpContextAccessor httpContextAccessor)
         {
             this._service = new BusinessService(repo);
             this._repo = repo;
-            this._userManager = userManager;
             this._userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
         public IActionResult Portfolios()

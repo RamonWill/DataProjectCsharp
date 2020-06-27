@@ -30,7 +30,7 @@ namespace DataProjectCsharp.Models.Repository
 
         List<SecurityPrices> GetSecurityPrices(string symbol);
         bool IsSecurityStored(string symbol);
-        bool isValidTicker(string symbol);
+        bool IsValidTicker(string symbol);
         void AddSecurityPrice(SecurityPrices price);
 
         List<Trade> GetTradesBySymbol(int? portfolioId, string userId, string symbol);

@@ -11,7 +11,7 @@ namespace DataProjectCsharp.Data
         /*
          * A portfolio is a collection of position objects
          * A big assumption made is that the first position that is added will determine the portfolios date range
-         * Therefore for portfolios with multiple securities it is best to load positions in ascending order
+         * Therefore portfolios with multiple securities should be added in ascending order
          */
 
         public readonly string PortfolioName; 

@@ -13,9 +13,9 @@ namespace DataProjectCsharp.Models
         public int Id { get; set; }
 
         [Required]
-        public DateTime date { get; set; }
+        public DateTime Date { get; set; }
         [Required]
-        public string ticker { get; set; }
+        public string Ticker { get; set; }
         [Required, Column(TypeName = "decimal(18,4)"), Range(0, long.MaxValue, ErrorMessage = "Prices can not be negative numbers.")]
         public decimal ClosePrice { get; set; }
     }

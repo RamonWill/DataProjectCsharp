@@ -21,18 +21,22 @@ namespace DataProjectCsharp.Models.Repository
 
         public HashSet<DateTime> GetPriceDates(string symbol)
         {
-            HashSet<DateTime> pricedDates = _db.SecurityPrices.Where(sp=>sp.ticker==symbol).Select(sp=>sp.date).ToHashSet();
+            HashSet<DateTime> pricedDates = _db.SecurityPrices
+                                               .Where(sp=>sp.Ticker==symbol)
+                                               .Select(sp=>sp.Date)
+                                               .ToHashSet();
             return pricedDates;
         }
 
         public List<string> GetOpenTradeTickers()
         {
-            // if the quantity sum of the grouped tickers doesnt equal zero then it means that the trade is open...
+            /* If the quantity sum of the grouped tickers doesnt equal zero 
+                then it means that for at least one user the trade is open...*/
             var openTrades = _db.Trades
-                            .GroupBy(t => t.Ticker)
-                            .Select(t => new { t.Key, quantity = t.Sum(i => i.Quantity) })
-                            .Where(t => t.quantity != 0)
-                            .ToList();
+                                .GroupBy(t => t.Ticker)
+                                .Select(t => new { t.Key, quantity = t.Sum(i => i.Quantity) })
+                                .Where(t => t.quantity != 0)
+                                .ToList();
             List<string> openTickers = openTrades.Select(t=>t.Key).ToList();
             return openTickers;
         }

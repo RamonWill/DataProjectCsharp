@@ -63,7 +63,10 @@ namespace DataProjectCsharp.Models.Repository
 
         public List<SecurityPrices> GetSecurityPrices(string symbol)
         {
-            return _db.SecurityPrices.Where(t => t.ticker == symbol).OrderBy(t => t.date).ToList();
+            return _db.SecurityPrices
+                      .Where(t => t.Ticker == symbol)
+                      .OrderBy(t => t.Date)
+                      .ToList();
         }
 
         public Portfolio GetUserPortfolio(int? portfolioId, string userId)
@@ -92,7 +95,7 @@ namespace DataProjectCsharp.Models.Repository
 
         public bool IsSecurityStored(string symbol)
         {
-            return (_db.SecurityPrices.Where(sp => sp.ticker == symbol).FirstOrDefault() != null);
+            return (_db.SecurityPrices.Where(sp => sp.Ticker == symbol).FirstOrDefault() != null);
         }
 
         public List<Trade> GetTradesBySymbol(int? portfolioId, string userId, string symbol)
@@ -127,7 +130,7 @@ namespace DataProjectCsharp.Models.Repository
             _db.Portfolios.Remove(portfolio);
         }
 
-        public bool isValidTicker(string symbol)
+        public bool IsValidTicker(string symbol)
         {
             return (_db.TradeableSecurities.FirstOrDefault(p => p.Ticker == symbol) != null);
         }

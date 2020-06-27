@@ -57,9 +57,9 @@ namespace DataProjectCsharp.Data
         // this object is comprised of a list of transactions. I can update the position object with transactions. Position.AddTransaction(Transaction)
         // current limitation transactions will need to be added by the correct date order for this to work.
         public readonly string symbol;
-        public decimal averageCost { get; set; }
-        public long netQuantity { get; set; }
-        private bool isLong { get; set; }
+        public decimal AverageCost { get; set; }
+        public long NetQuantity { get; set; }
+        private bool IsLong { get; set; }
 
         protected List<PositionSnapshot> positionBreakdown;
         private Queue<OpenLots> openLots;
@@ -67,8 +67,8 @@ namespace DataProjectCsharp.Data
         public Position(string symbol)
         {
             this.symbol = symbol;
-            this.averageCost = 0;
-            this.netQuantity = 0;
+            this.AverageCost = 0;
+            this.NetQuantity = 0;
             this.positionBreakdown = new List<PositionSnapshot>();
             this.openLots = new Queue<OpenLots>();
         }
@@ -85,15 +85,15 @@ namespace DataProjectCsharp.Data
 
             // make sure a transaction cannot equal zero in my models
             // position has no trades
-            // used to be (transaction.Quantity * netQuantity == 0) but if the net quantity is zero then this will always be true
+            // used to be (transaction.Quantity * NetQuantity == 0) but if the net quantity is zero then this will always be true
             // and i need to ignore trades where the transaction.quantity is zero;
-            if (netQuantity == 0)
+            if (NetQuantity == 0)
             {
-                this.isLong = (transaction.Quantity >= 0);
+                this.IsLong = (transaction.Quantity >= 0);
             }
 
             //trades in diff direction to position
-            else if (transaction.Quantity * netQuantity < 0)
+            else if (transaction.Quantity * NetQuantity < 0)
             {
                 while (openLots.Count > 0 && transaction.Quantity != 0)
                 {
@@ -146,14 +146,14 @@ namespace DataProjectCsharp.Data
 
         private void UpdatePosition(Trade transaction)
         {
-            this.netQuantity = this.openLots.Sum(lots => lots.quantity);
+            this.NetQuantity = this.openLots.Sum(lots => lots.quantity);
             if (transaction.Quantity==0 && this.openLots.Count > 0)
             {
-                this.averageCost = this.openLots.Peek().price;
+                this.AverageCost = this.openLots.Peek().price;
             }
             else
             {
-                this.averageCost = GetAverageCost();
+                this.AverageCost = GetAverageCost();
             }            
             CheckDirection();
             AppendBreakdown(transaction.TradeDate);
@@ -161,7 +161,7 @@ namespace DataProjectCsharp.Data
 
         private void AppendBreakdown(DateTime tradeDate)
         {
-            PositionSnapshot snapshot = new PositionSnapshot(tradeDate, this.netQuantity, this.averageCost);
+            PositionSnapshot snapshot = new PositionSnapshot(tradeDate, this.NetQuantity, this.AverageCost);
             // if theres no trades add this trade
             if (positionBreakdown.Count == 0)
             {
@@ -186,24 +186,24 @@ namespace DataProjectCsharp.Data
 
         private decimal GetAverageCost()
         {
-            if (this.netQuantity == 0)
+            if (this.NetQuantity == 0)
             {
                 return Decimal.Zero;
             }
             decimal marketValue = GetTotalMarketValue();
 
-            return marketValue/this.netQuantity;
+            return marketValue/this.NetQuantity;
         }
 
         private void CheckDirection()
         {
-            if (this.netQuantity < 0 && this.isLong)
+            if (this.NetQuantity < 0 && this.IsLong)
             {
-                this.isLong = false;
+                this.IsLong = false;
             }
-            else if (this.netQuantity > 0 && !this.isLong)
+            else if (this.NetQuantity > 0 && !this.IsLong)
             {
-                this.isLong = true;
+                this.IsLong = true;
             }
         }
     }

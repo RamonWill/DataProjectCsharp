@@ -20,15 +20,13 @@ namespace DataProjectCsharp.Controllers
     public class TradeController : Controller
     {
         
-        private readonly UserManager<User> _userManager;
         private readonly string _userId;
         private readonly AlphaVantageConnection _avConn;
         private readonly IRepository _repo;
 
-        public TradeController(IRepository repo, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor, AlphaVantageConnection avConn)
+        public TradeController(IRepository repo, IHttpContextAccessor httpContextAccessor, AlphaVantageConnection avConn)
         {
             this._repo = repo;
-            this._userManager = userManager;
             this._userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             this._avConn = avConn;
         }
@@ -77,7 +75,7 @@ namespace DataProjectCsharp.Controllers
             trade.UserId = _userId;
 
             // check if trade ticker is valid..
-            bool validTicker = _repo.isValidTicker(trade.Ticker);
+            bool validTicker = _repo.IsValidTicker(trade.Ticker);
             if (!validTicker)
             {
                 ModelState.AddModelError("Ticker", $"{trade.Ticker} is not a tradeable instrument");
@@ -95,7 +93,7 @@ namespace DataProjectCsharp.Controllers
                 
                 foreach(AlphaVantageSecurityData price in prices)
                 {
-                    SecurityPrices newPrice = new SecurityPrices {date=price.Timestamp, ClosePrice=price.Close, ticker=trade.Ticker };
+                    SecurityPrices newPrice = new SecurityPrices {Date=price.Timestamp, ClosePrice=price.Close, Ticker=trade.Ticker };
                     _repo.AddSecurityPrice(newPrice);
                 }
                 await _repo.SaveChangesAsync();

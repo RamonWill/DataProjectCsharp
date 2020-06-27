@@ -10,7 +10,7 @@ namespace DataProjectCsharp.Models
     {
         [Required(ErrorMessage ="You need to create a Username")]
         public string UserName { get; set; }
-        [Required(ErrorMessage ="An Email address is required.")]// tell user they can use tempmail
+        [Required(ErrorMessage ="An Email address is required.")]
         [EmailAddress]
         public string Email { get; set; }
 

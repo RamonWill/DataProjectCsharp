@@ -76,9 +76,10 @@ namespace DataProjectCsharp.Controllers
             }
 
 
-            var userName = userInput.Email; // User/Email field in form.
+            var userName = userInput.Email; // Username or Email field in form.
             User user;
             // If form has '@' it is an email otherwise it is a username.
+            // allows the user to login using either their email or username
             if (userName.IndexOf('@') > -1)
             {
                 user = await _userManager.FindByEmailAsync(userName);

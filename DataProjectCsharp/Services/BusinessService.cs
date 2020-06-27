@@ -169,7 +169,7 @@ namespace DataProjectCsharp.Services
         }
         private DataFrame CreatePriceTable(List<SecurityPrices> securityPrices)
         {
-            List<DateTime> dates = securityPrices.Select(sp => sp.date).ToList();
+            List<DateTime> dates = securityPrices.Select(sp => sp.Date).ToList();
             List<decimal> prices = securityPrices.Select(sp => sp.ClosePrice).ToList();
 
             PrimitiveDataFrameColumn<DateTime> dateCol = new PrimitiveDataFrameColumn<DateTime>("date", dates);

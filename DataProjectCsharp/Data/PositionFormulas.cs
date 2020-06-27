@@ -25,7 +25,7 @@ namespace DataProjectCsharp.Data
         {
             return this.ValuationTable;
         }
-        // Via inheritance i have inherited all the of position class attributes and methods.
+        // Via inheritance i have all the position class attributes and methods.
         public void CalculateDailyPerformance(DataFrame prices)
         {
             if (this.PerformanceTable.Columns.Count != 0)
@@ -42,7 +42,7 @@ namespace DataProjectCsharp.Data
 
             /// Take all prices from Database and columns with them and add those columns to the performance table
             // then add new columns for the dataframe
-            // modifies dataframe inplace.
+            // modify dataframe inplace.
             //this.PerformanceTable = prices;
             DataFrame NewTable = prices;
             long numberOfRows = NewTable.Rows.Count;
@@ -135,7 +135,7 @@ namespace DataProjectCsharp.Data
                 return;
             }
 
-            /// Take all prices from Database and columns with them and add those columns to the performance table
+            /// Take all prices from Database and columns with them and add those columns to the valuation table
             // then add new columns for the dataframe
             // modifies dataframe inplace.
 

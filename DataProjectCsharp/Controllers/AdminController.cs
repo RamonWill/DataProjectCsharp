@@ -30,9 +30,9 @@ namespace DataProjectCsharp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateDatabasePrices()
         {
-            // so basically use the GetOpenTradeTickers() to get a list of the open tickers.
-            // then for each ticker GetMostRecentPrice(symbol) which returns a date datetime.
-            // then connect get the prices from the alphavantage connection and add prices for that ticker if the date is more recent than the most recent date.
+            // 1. Get the tickers for all open trades. (tickers where net quantity !=0)
+            // 2. get a hashset of the date each ticker is priced at our db.
+            // 3. get latest prices from alphavantage and update the prices for each ticker if we dont have it in our system.
 
             // I can make 5 api calls a minute. so after every 5 calls. pause for 60 seconds before resuming
             List<string> openTickers = _adminRepo.GetOpenTradeTickers();
@@ -50,7 +50,7 @@ namespace DataProjectCsharp.Controllers
                 {
                     if (!pricedDates.Contains(price.Timestamp))
                     {
-                        SecurityPrices newPrice = new SecurityPrices { date = price.Timestamp, ClosePrice = price.Close, ticker = ticker };
+                        SecurityPrices newPrice = new SecurityPrices { Date = price.Timestamp, ClosePrice = price.Close, Ticker = ticker };
                         _adminRepo.AddSecurityPrice(newPrice);
                         System.Diagnostics.Debug.WriteLine($"Storing: {ticker}| {price.Timestamp}| {price.Close}");
                     }
