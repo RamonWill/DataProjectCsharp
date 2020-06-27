@@ -32,8 +32,8 @@ namespace DataProjectCsharp.Tests.DataObjectsTesting
             Trade tradeB = CreateTransaction(300, testSymbol, 17.6m, new DateTime(2020, 5, 5));
             position.AddTransaction(tradeA);
             position.AddTransaction(tradeB);
-            Assert.Equal(800, position.netQuantity);
-            Assert.Equal(14.4125m, position.averageCost);
+            Assert.Equal(800, position.NetQuantity);
+            Assert.Equal(14.4125m, position.AverageCost);
 
             // expected breakdown
             List<PositionSnapshot> breakdown = new List<PositionSnapshot>
@@ -53,8 +53,8 @@ namespace DataProjectCsharp.Tests.DataObjectsTesting
             Trade tradeB = CreateTransaction(-157, testSymbol, 10.22m, new DateTime(2020, 5, 4));
             position.AddTransaction(tradeA);
             position.AddTransaction(tradeB);
-            Assert.Equal(-607, position.netQuantity);
-            Assert.Equal(13.83779242m, Math.Round(position.averageCost,8));
+            Assert.Equal(-607, position.NetQuantity);
+            Assert.Equal(13.83779242m, Math.Round(position.AverageCost,8));
 
             // expected breakdown
             List<PositionSnapshot> breakdown = new List<PositionSnapshot>
@@ -73,8 +73,8 @@ namespace DataProjectCsharp.Tests.DataObjectsTesting
             Trade tradeB = CreateTransaction(-200, testSymbol, 5.5m, new DateTime(2020, 5, 5));
             position.AddTransaction(tradeA);
             position.AddTransaction(tradeB);
-            Assert.Equal(100, position.netQuantity);
-            Assert.Equal(15m, position.averageCost);
+            Assert.Equal(100, position.NetQuantity);
+            Assert.Equal(15m, position.AverageCost);
 
             // expected breakdown
             List<PositionSnapshot> breakdown = new List<PositionSnapshot>
@@ -94,8 +94,8 @@ namespace DataProjectCsharp.Tests.DataObjectsTesting
             Trade tradeB = CreateTransaction(100, testSymbol, 10m, new DateTime(2020, 5, 5));
             position.AddTransaction(tradeA);
             position.AddTransaction(tradeB);
-            Assert.Equal(-200, position.netQuantity);
-            Assert.Equal(15m, position.averageCost);
+            Assert.Equal(-200, position.NetQuantity);
+            Assert.Equal(15m, position.AverageCost);
 
             // expected breakdown
             List<PositionSnapshot> breakdown = new List<PositionSnapshot>
@@ -115,8 +115,8 @@ namespace DataProjectCsharp.Tests.DataObjectsTesting
             Trade tradeB = CreateTransaction(-300, testSymbol, 10m, new DateTime(2020, 5, 5));
             position.AddTransaction(tradeA);
             position.AddTransaction(tradeB);
-            Assert.Equal(0, position.netQuantity);
-            Assert.Equal(0, position.averageCost);
+            Assert.Equal(0, position.NetQuantity);
+            Assert.Equal(0, position.AverageCost);
 
             // expected breakdown
             List<PositionSnapshot> breakdown = new List<PositionSnapshot>
@@ -141,8 +141,8 @@ namespace DataProjectCsharp.Tests.DataObjectsTesting
             position.AddTransaction(tradeA);
             position.AddTransaction(tradeB);
             position.AddTransaction(tradeC);
-            Assert.Equal(400, position.netQuantity);
-            Assert.Equal(15m, position.averageCost);
+            Assert.Equal(400, position.NetQuantity);
+            Assert.Equal(15m, position.AverageCost);
 
             // expected breakdown
             List<PositionSnapshot> breakdown = new List<PositionSnapshot>

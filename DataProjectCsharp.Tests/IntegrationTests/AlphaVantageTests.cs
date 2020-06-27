@@ -22,8 +22,8 @@ namespace DataProjectCsharp.Tests.DataObjectsTesting
         }
 
         private readonly string testSymbol = "MSFT";
-        private IConfiguration config = InitConfiguration();
-        private AlphaVantageConnection avConnection;
+        private readonly IConfiguration config = InitConfiguration();
+        private readonly AlphaVantageConnection avConnection;
         
         public AlphaVantageTests()
         {

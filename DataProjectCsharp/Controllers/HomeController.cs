@@ -16,7 +16,7 @@ namespace DataProjectCsharp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        public HomeController(ILogger<HomeController> logger, AlphaVantageConnection AVConn)
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
