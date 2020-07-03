@@ -164,9 +164,24 @@ namespace DataProjectCsharp.Services
                 portfolioValuation[row, hprIndex] = Math.Round(HPR, 3);
             }
 
+
+            // This is HPR performance indexed
+            PrimitiveDataFrameColumn<decimal> HPRindexed = new PrimitiveDataFrameColumn<decimal>("Holding Period Return Indexed", pvSize);
+            portfolioValuation.Columns.Add(HPRindexed);
+            int HPRi = portfolioValuation.Columns.Count - 1;
+
+            portfolioValuation[0, HPRi] = 100m; //initial index.
+            for (int row = 1; row < pvSize; row++)
+            {
+                int prevRow = row - 1;
+                decimal HPRx = (decimal)portfolioValuation[prevRow,HPRi] *(((decimal)portfolioValuation[row,hprIndex]/100)+1);
+                portfolioValuation[row, HPRi] = Math.Round(HPRx, 3);
+            }
+
             System.Diagnostics.Debug.WriteLine(portfolioValuation);
             return portfolioValuation;
         }
+
         private DataFrame CreatePriceTable(List<SecurityPrices> securityPrices)
         {
             List<DateTime> dates = securityPrices.Select(sp => sp.Date).ToList();

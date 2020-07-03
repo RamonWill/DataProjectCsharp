@@ -11,7 +11,7 @@
         @if (SignInManager.IsSignedIn(User))
         {
             <h3 class="display-4 text-primary font-weight-bold">Welcome @User.Identity.Name</h3>
-            <p>View your <a asp-controller="Portfolio" asp-action="Portfolios">Portfolios' here</a>.</p>
+            <p>View your Portfolios' <a asp-controller="Portfolio" asp-action="Portfolios">here</a>.</p>
         }
         else
         {
