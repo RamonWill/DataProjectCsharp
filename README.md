@@ -36,7 +36,9 @@ A big thank you to the StackOverflow and Youtube communities for the answers and
 * Disclaimer: This project is not valid financial tool. It is a project that I've created to help me learn more about C#. You should in no way use it to make investment decisions.
 
 # Video-Demo
-Coming Soon
+The image below will redirect you to the video demo on Youtube
+[<img src="https://img.youtube.com/vi/JY4dN9oawcI/maxresdefault.jpg" width="75%">](https://www.youtube.com/watch?v=JY4dN9oawcI)
+
 
 # Screenshots
 
