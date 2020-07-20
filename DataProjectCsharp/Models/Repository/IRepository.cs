@@ -33,6 +33,8 @@ namespace DataProjectCsharp.Models.Repository
         bool IsValidTicker(string symbol);
         void AddSecurityPrice(SecurityPrices price);
 
+        TradeableSecurities GetSecurityDetails(string symbol);
+
         List<Trade> GetTradesBySymbol(int? portfolioId, string userId, string symbol);
 
         List<TradeableSecurities> GetTradeableSecurities();

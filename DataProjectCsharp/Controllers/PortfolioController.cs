@@ -58,7 +58,12 @@ namespace DataProjectCsharp.Controllers
                 return NotFound();
             }
             string portfolioName = _repo.GetPortfolioName(portfolioId);
-            PositionDataVM positionVM = new PositionDataVM { PortfolioId = portfolioId, PortfolioName = portfolioName, PositionObject = position };
+            TradeableSecurities securityDetail = _repo.GetSecurityDetails(positionSymbol);
+
+            PositionDataVM positionVM = new PositionDataVM { PortfolioId = portfolioId, 
+                                                             PortfolioName = portfolioName, 
+                                                             PositionObject = position,
+                                                             PositionSymbolData = securityDetail};
 
             return View(positionVM);
         }

@@ -12,9 +12,17 @@
             <div class="card border-success mb-3">
                 <div class="card-header font-weight-bold" style="background-color:#3b964b">@Model.PositionObject.symbol Summary</div>
                 <div class="card-body text-success">
-                    <span class="card-text"><span style="font-weight:600">Quantity:</span> @Model.PositionObject.NetQuantity</span>
+                    <span class="card-text"><span style="font-weight:600;color:darkgreen">Full Name:</span> @Model.PositionSymbolData.Name</span>
                     <br />
-                    <span class="card-text"><span style="font-weight:600">Average Cost:</span> @Model.PositionObject.AverageCost.ToString("#0.00")</span>
+                    <span class="card-text"><span style="font-weight:600;color:darkgreen">Quantity:</span> @Model.PositionObject.NetQuantity</span>
+                    <br />
+                    <span class="card-text"><span style="font-weight:600;color:darkgreen">Average Cost:</span> @Model.PositionObject.AverageCost.ToString("#0.00")</span>
+                    <br />
+                    <span class="card-text"><span style="font-weight:600;color:darkgreen">Country:</span> @Model.PositionSymbolData.Country</span>
+                    <br />
+                    <span class="card-text"><span style="font-weight:600;color:darkgreen">Index:</span> @Model.PositionSymbolData.BenchmarkIndex</span>
+                    <br />
+                    <span class="card-text"><span style="font-weight:600;color:darkgreen">ISO Alpha Code:</span> @Model.PositionSymbolData.ISOAlphaCode</span>
                 </div>
             </div>
         </div>

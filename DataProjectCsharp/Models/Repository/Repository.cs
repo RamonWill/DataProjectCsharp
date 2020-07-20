@@ -134,5 +134,10 @@ namespace DataProjectCsharp.Models.Repository
         {
             return (_db.TradeableSecurities.FirstOrDefault(p => p.Ticker == symbol) != null);
         }
+
+        public TradeableSecurities GetSecurityDetails(string symbol)
+        {
+            return _db.TradeableSecurities.Where(ts => ts.Ticker == symbol).FirstOrDefault();
+        }
     }
 }
