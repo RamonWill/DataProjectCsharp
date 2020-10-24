@@ -89,6 +89,7 @@ namespace DataProjectCsharp.Controllers
             if (!isSecurityStored)
             {
                 // Later on create logic that stores the security price AND MAKE THIS ASYNC so THE SCREEN DOESNT FREEZE
+                // also make this try catch in the event that prices are not found
                 List<AlphaVantageSecurityData> prices = _avConn.GetDailyPrices(trade.Ticker);
                 
                 foreach(AlphaVantageSecurityData price in prices)

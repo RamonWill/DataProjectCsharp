@@ -113,6 +113,7 @@ namespace DataProjectCsharp.Data
             numberOfRows = NewTable.Rows.Count;
             for(int row = 0; row < numberOfRows; row++)
             {
+                // if cost is zero (user closed position) then i need to change this to null...
                 decimal price = Convert.ToDecimal(NewTable[row, priceCol]);
                 decimal cost = (decimal)NewTable[row, averageCostCol];
                 int sign = (int)NewTable[row, signCol];
