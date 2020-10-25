@@ -5737,6 +5737,10 @@ a.close.disabled {
   outline: 0;
 }
 
+.modal {
+    overflow: auto !important;
+}
+
 .modal-dialog {
   position: relative;
   width: auto;

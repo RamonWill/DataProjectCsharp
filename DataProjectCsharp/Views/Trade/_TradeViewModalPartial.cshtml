@@ -1,6 +1,7 @@
 ﻿@model DataProjectCsharp.Models.Portfolio
 
-<div class="modal fade" id="viewTrades">
+<div id="modal-placeholder-trades"></div>
+<div class="modal fade" id="viewTrades" >
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class=" = modal-header">
@@ -67,8 +68,7 @@
         </div>
     </div>
 </div>
-<div id="modal-placeholder-trades"></div>
-<script src="~/js/Trademodals.js"></script>
+<script src="~/js/Trademodals.js" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
         $('#TradesView').DataTable({
@@ -77,7 +77,3 @@
         });
     });
 </script>
-
-@section Scripts{
-    <partial name="_ValidationScriptsPartial" />
-}

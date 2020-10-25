@@ -6,7 +6,7 @@
         <div class="modal-content">
             <div class=" = modal-header">
                 <h5 class="modal-title" id="addTradeLabel">Add a new Trade</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" onclick="$('#addTrade').modal('hide');" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -57,7 +57,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-save="modal-trade">Save changes</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" onclick="$('#addTrade').modal('hide');">Cancel</button>
             </div>
         </div>
     </div>

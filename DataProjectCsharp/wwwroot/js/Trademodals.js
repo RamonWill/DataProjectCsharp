@@ -29,7 +29,6 @@
         //Replace the previous modalbody with the new body that will reflect the errors if any.
         var newModalBody = $('.modal-body', data);
         placeHolderElement.find('.modal-body').replaceWith(newModalBody)
-
         var isValid = newModalBody.find('[name="IsValid"]').val() == 'True';
         if (isValid) {
             placeHolderElement.find('.modal').modal('hide');

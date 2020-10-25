@@ -35,6 +35,7 @@
 })($);
 
 // This is the modal to view all of the user trades
+
 (function ($) {
     let placeHolderElement = $('#modal-placeholder-trade-view');
     let view_trades_button = $('button[data-toggle="ajax-modal-view-trades"]')
@@ -49,11 +50,15 @@
         placeHolderElement.html(data);
         placeHolderElement.find('.modal').modal('show');
     }
-   
+
     placeHolderElement.on('click', '[data-dismiss="modal"]', hideTradesModal)
     function hideTradesModal(data) {
         placeHolderElement.find('.modal').modal('hide');
     }
+    
+    placeHolderElement.on('hidden.bs.modal', '.modal', function () {
+        $('.modal:visible').length && $(document.body).addClass('modal-open');
+    });
 })($);
 
 
